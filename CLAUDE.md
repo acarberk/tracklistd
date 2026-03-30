@@ -74,6 +74,13 @@ Bu dosya Claude Code'un proje hafizasidir. Her oturumda otomatik okunur.
 - **Turborepo** — Basit config, hızlı build cache, Next.js ekosistemi ile uyumlu
 - Yapı: `apps/` (web, api, mobile) + `packages/` (shared, ui, config)
 
+### Git & CI/CD
+- **Branching:** Trunk-Based Development (kısa ömürlü feature branch, sık merge, feature flag)
+- **CI/CD:** GitHub Actions (lint, type check, test, build — her PR'da otomatik)
+- **Deploy:** Main'e merge = otomatik deploy (Vercel + Railway)
+- **Commit:** Conventional Commits (commitlint + Husky pre-commit hook)
+- **Branch naming:** `feature/`, `fix/`, `chore/`, `docs/`, `refactor/` + kebab-case
+
 ---
 
 ## Rakip Analizi (Tamamlandı)
