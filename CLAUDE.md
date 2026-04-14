@@ -1,4 +1,4 @@
-# Game Vault — CLAUDE.md
+# Tracklistd — CLAUDE.md
 
 Bu dosya Claude Code'un proje hafizasidir. Her oturumda otomatik okunur.
 
@@ -6,13 +6,34 @@ Bu dosya Claude Code'un proje hafizasidir. Her oturumda otomatik okunur.
 
 ## Proje Vizyonu
 
-**Game Vault**, oyuncular icin Letterboxd benzeri bir platform. Oyun koleksiyonu takibi, achievement tracking, sosyal karsilastirma ve AI destekli oyun kesfi sunar.
+**Tracklistd**, tüm medya tüketimini tek platformda takip eden Letterboxd/Backloggd benzeri bir platform. Oyun, film, dizi, anime koleksiyon takibi, achievement tracking, sosyal karşılaştırma ve AI destekli keşif sunar.
 
-**Temel fark yaratacak ozellikler:**
-- Backloggd'un toplulugu + Exophase'in achievement sync'i + native mobil = bos nis
+**Neden "Tracklistd"?**
+- Track (takip) + List (liste) + d (Letterboxd/Backloggd vibes)
+- Tek platform: oyun + film + dizi + anime (hiçbir rakip hepsini birlikte sunmuyor)
+- Her domain ayrı modül, ortak altyapı (auth, gamification, sosyal)
+
+**Temel fark yaratacak özellikler:**
+- Tüm medya tek profilde — Letterboxd sadece film, Backloggd sadece oyun, MAL sadece anime
+- Cross-domain gamification — oyun + dizi + anime streak = daha güçlü retention
 - Steam/PSN/Xbox otomatik sync (rakiplerde yok veya paywalled)
-- Ucretsiz temel ozellikler (GG uygulamasi her seyi $4.99/ay arkasina koyuyor)
-- Turkce dil destegi (45M Turk oyuncusu, hicbir rakipte Turkce yok)
+- Ücretsiz temel özellikler (GG uygulaması her şeyi $4.99/ay arkasına koyuyor)
+- Türkçe dil desteği (45M Türk oyuncusu, hiçbir rakipte Türkçe yok)
+
+**Domain Modülleri (Faz bazlı):**
+- **Faz 1 (MVP):** Oyun tracking — en az rakipli, en çok boşluk olan alan
+- **Faz 2:** Film/Dizi tracking — Letterboxd/Trakt alternatifi
+- **Faz 3:** Anime tracking — MAL alternatifi
+- **Faz 4:** Kitap, müzik, podcast...
+
+**Multi-domain Rakip Haritası:**
+| Domain | Lider | Kullanıcı | Eksik |
+|--------|-------|-----------|-------|
+| Oyun | Backloggd | 650K+ | Dizi/film/anime yok, mobil yok |
+| Film | Letterboxd | 15M+ | Oyun/dizi/anime yok |
+| Anime | MyAnimeList | 20M+ | Oyun/film yok |
+| Dizi | Trakt/Serializd | 2M+ | Oyun/anime yok |
+| **Hepsi** | **Yok** | — | **Tracklistd'ın fırsatı** |
 
 ---
 
@@ -76,10 +97,22 @@ Bu dosya Claude Code'un proje hafizasidir. Her oturumda otomatik okunur.
 
 ### Git & CI/CD
 - **Branching:** Trunk-Based Development (kısa ömürlü feature branch, sık merge, feature flag)
-- **CI/CD:** GitHub Actions (lint, type check, test, build — her PR'da otomatik)
+- **CI/CD:** GitHub Actions — ücretsiz 2.000 dk/ay (private repo), PR'larda: lint, type check, test, build
 - **Deploy:** Main'e merge = otomatik deploy (Vercel + Railway)
 - **Commit:** Conventional Commits (commitlint + Husky pre-commit hook)
 - **Branch naming:** `feature/`, `fix/`, `chore/`, `docs/`, `refactor/` + kebab-case
+- **Commit'lerde Co-Authored-By satırı OLMAYACAK**
+- **Repo:** GitHub Private — https://github.com/acarberk/tracklistd
+
+### Kurulum Sırası (config & tooling)
+1. ~~TypeScript Config~~ ✅ (packages/config/tsconfig/ — base, nextjs, nestjs, library)
+2. ESLint + Prettier
+3. Husky + lint-staged
+4. Commitlint
+5. Semantic Versioning + Otomatik Changelog
+6. GitHub Actions CI/CD
+7. SonarQube (SonarCloud)
+8. ZAP Scan (OWASP)
 
 ---
 
@@ -98,7 +131,7 @@ Bu dosya Claude Code'un proje hafizasidir. Her oturumda otomatik okunur.
 ### Veri Kaynağı
 - **RAWG API** — 500K+ oyun veritabanı (genre, platform, Metacritic, screenshot, achievement)
 
-### Pazar Boşlukları (Game Vault Fırsatları)
+### Pazar Boşlukları (Tracklistd Fırsatları)
 1. **Mobil + Web birlikte ücretsiz** — Backloggd web-only, GG mobil paywalled
 2. **Ücretsiz otomatik sync** — Rakipler premium'a koyuyor
 3. **Koleksiyon + Achievement birlikte** — Backloggd'da achievement yok, Exophase'de koleksiyon yok
@@ -148,14 +181,14 @@ Bu dosya Claude Code'un proje hafizasidir. Her oturumda otomatik okunur.
 ## Monetization (Tamamlandı)
 
 ### Free vs Premium
-**Game Vault Free (Ücretsiz):**
+**Tracklistd Free (Ücretsiz):**
 - Sınırsız oyun ekleme, durum takibi, 1-10 puan
 - Steam/PSN/Xbox sync (günde 1 kez)
 - Tüm gamification (streak, XP, level, leaderboard, rozetler)
 - Review, arkadaş, activity feed, 5 liste
 - Minimal banner reklam
 
-**Game Vault Pro ($3.99/ay veya $29.99/yıl):**
+**Tracklistd Pro ($3.99/ay veya $29.99/yıl):**
 - Reklamsız
 - Gerçek zamanlı sync (anlık)
 - Gelişmiş istatistikler + yıllık özet (Wrapped)
