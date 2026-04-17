@@ -125,7 +125,7 @@ Bu dosya Claude Code'un proje hafizasidir. Her oturumda otomatik okunur.
 3. ~~Husky + lint-staged~~ ✅ (pre-commit: eslint --fix + prettier, commit-msg: commitlint)
 4. ~~Commitlint~~ ✅ (Conventional Commits — feat/fix/chore/docs/refactor/test/perf/ci)
 5. ~~Semantic Versioning + Otomatik Changelog~~ ✅ (Changesets — pnpm changeset → version → tag)
-6. GitHub Actions CI/CD
+6. ~~GitHub Actions CI/CD~~ ✅ (.github/workflows/ci.yml — lint, type-check, test, build)
 7. SonarQube (SonarCloud)
 8. ZAP Scan (OWASP)
 
