@@ -5,12 +5,16 @@
   "type": "module",
   "description": "Shared UI components",
   "scripts": {
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "type-check": "tsc --noEmit",
+    "build": "echo 'build placeholder'",
+    "test": "echo 'no tests yet'"
   },
   "devDependencies": {
     "@tracklistd/config": "workspace:*",
     "eslint": "^9.24.0",
     "eslint-plugin-react": "^7.37.5",
-    "eslint-plugin-react-hooks": "^5.2.0"
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "typescript": "^6.0.3"
   }
 }
