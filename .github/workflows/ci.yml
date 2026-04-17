@@ -1,0 +1,66 @@
+name: CI
+
+# Ne zaman çalışır?
+# - main'e doğrudan push (genellikle olmaz, branch protection var)
+# - Herhangi bir branch'ten PR açıldığında veya güncellendiğinde
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+# Aynı branch'e yeni push gelirse önceki çalışan workflow'u iptal et
+# Kaynak tasarrufu: gereksiz build'ler çalışmaz
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ci:
+    name: Lint / Type Check / Test / Build
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Repo'yu runner makinesine çek
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # Tüm commit geçmişini çek — Turborepo remote cache için gerekli
+          fetch-depth: 0
+
+      # 2. pnpm'yi kur (Node'dan önce — corepack ile aktive edilir)
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.32.1
+
+      # 3. Node.js kur ve pnpm cache'i aktive et
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      # 4. Bağımlılıkları kur
+      # --frozen-lockfile: pnpm-lock.yaml ile tam eşleşme zorunlu
+      # lock dosyası güncel değilse CI hata verir — bu kasıtlı
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # 5. ESLint — tüm workspace paketlerinde
+      - name: Lint
+        run: pnpm turbo run lint
+
+      # 6. TypeScript tip kontrolü — her paketin tsconfig'i ile
+      - name: Type Check
+        run: pnpm turbo run type-check
+
+      # 7. Testler — henüz test yok ama pipeline hazır
+      - name: Test
+        run: pnpm turbo run test
+
+      # 8. Build — her paketin çıktısı üretilir
+      - name: Build
+        run: pnpm turbo run build
