@@ -1,0 +1,14 @@
+{
+  "name": "@tracklistd/api",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "description": "NestJS backend API",
+  "scripts": {
+    "lint": "eslint ."
+  },
+  "devDependencies": {
+    "@tracklistd/config": "workspace:*",
+    "eslint": "^9.24.0"
+  }
+}

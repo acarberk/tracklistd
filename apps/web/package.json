@@ -1,0 +1,17 @@
+{
+  "name": "@tracklistd/web",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "description": "Next.js 15 frontend",
+  "scripts": {
+    "lint": "eslint ."
+  },
+  "devDependencies": {
+    "@tracklistd/config": "workspace:*",
+    "eslint": "^9.24.0",
+    "eslint-config-next": "^15.3.0",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^5.2.0"
+  }
+}
