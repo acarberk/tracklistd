@@ -1,6 +1,6 @@
 {
   "name": "@tracklistd/web",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "private": true,
   "type": "module",
   "description": "Next.js 15 frontend",
