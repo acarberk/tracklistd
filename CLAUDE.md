@@ -9,11 +9,13 @@ Bu dosya Claude Code'un proje hafizasidir. Her oturumda otomatik okunur.
 **Tracklistd**, tüm medya tüketimini tek platformda takip eden Letterboxd/Backloggd benzeri bir platform. Oyun, film, dizi, anime koleksiyon takibi, achievement tracking, sosyal karşılaştırma ve AI destekli keşif sunar.
 
 **Neden "Tracklistd"?**
+
 - Track (takip) + List (liste) + d (Letterboxd/Backloggd vibes)
 - Tek platform: oyun + film + dizi + anime (hiçbir rakip hepsini birlikte sunmuyor)
 - Her domain ayrı modül, ortak altyapı (auth, gamification, sosyal)
 
 **Temel fark yaratacak özellikler:**
+
 - Tüm medya tek profilde — Letterboxd sadece film, Backloggd sadece oyun, MAL sadece anime
 - Cross-domain gamification — oyun + dizi + anime streak = daha güçlü retention
 - Steam/PSN/Xbox otomatik sync (rakiplerde yok veya paywalled)
@@ -21,6 +23,7 @@ Bu dosya Claude Code'un proje hafizasidir. Her oturumda otomatik okunur.
 - Türkçe dil desteği (45M Türk oyuncusu, hiçbir rakipte Türkçe yok)
 
 **Domain Modülleri (Faz bazlı):**
+
 - **Faz 1 (MVP):** Oyun tracking — en az rakipli, en çok boşluk olan alan
 - **Faz 2:** Film/Dizi tracking — Letterboxd/Trakt alternatifi
 - **Faz 3:** Anime tracking — MAL alternatifi
@@ -40,6 +43,7 @@ Bu dosya Claude Code'un proje hafizasidir. Her oturumda otomatik okunur.
 ## Tech Stack
 
 ### Frontend
+
 - **Next.js 15 + React 19**
 - SSR/SSG ile SEO ve performans
 - Server Components ile daha az client JS
@@ -50,6 +54,7 @@ Bu dosya Claude Code'un proje hafizasidir. Her oturumda otomatik okunur.
 - **Validation:** Zod (shared schemas — BE ile aynı)
 
 ### Backend
+
 - **NestJS + TypeScript + Fastify adapter**
 - Full-stack TypeScript (FE ile shared types)
 - Modüler mimari: Guard, Interceptor, Pipe
@@ -62,29 +67,36 @@ Bu dosya Claude Code'un proje hafizasidir. Her oturumda otomatik okunur.
 - **Config:** @nestjs/config + Zod env validation
 
 ### Veritabanı
+
 - **PostgreSQL** — Ana veritabanı (ilişkisel veri + JSONB esnek metadata)
 - **Redis** — Cache, session, leaderboard (sorted sets), Bull Queue backend, Pub/Sub
 
 ### Deployment
+
 - **Vercel** — Next.js frontend hosting (ücretsiz tier, git push = deploy)
 - **Railway** — NestJS backend + PostgreSQL + Redis hosting (~$5-15/ay)
 
 ### Auth
+
 - **JWT + Passport.js** — Access + Refresh token, stateless auth
 - OAuth: Steam, Google, Discord login (Passport stratejileri)
 - NestJS Guard sistemi ile route bazlı yetkilendirme
 
 ### Mobil
+
 - MVP kapsamında değil. İleride React Native + Expo planlanıyor (React bilgisi transferi)
 
 ### Styling
+
 - **Tailwind CSS + shadcn/ui** — Utility-first CSS + hazır özelleştirilebilir componentler
 - Dark mode desteği, Radix UI erişilebilirlik temeli
 
 ### ORM
+
 - **Prisma** — Type-safe ORM, otomatik migration, Prisma Studio görsel DB yönetimi
 
 ### Test
+
 - **Backend:** Jest + Supertest — her modül unit + integration test
 - **Frontend:** Vitest + Testing Library — hook ve component testleri
 - **Shared:** Zod şema unit testleri
@@ -92,10 +104,12 @@ Bu dosya Claude Code'un proje hafizasidir. Her oturumda otomatik okunur.
 - Strateji: Kapsamlı — tüm modüller test edilecek (~%70 coverage hedefi)
 
 ### Monorepo
+
 - **Turborepo** — Basit config, hızlı build cache, Next.js ekosistemi ile uyumlu
 - Yapı: `apps/` (web, api, mobile) + `packages/` (shared, ui, config)
 
 ### Git & CI/CD
+
 - **Branching:** Trunk-Based Development (kısa ömürlü feature branch, sık merge, feature flag)
 - **CI/CD:** GitHub Actions — ücretsiz 2.000 dk/ay (private repo), PR'larda: lint, type check, test, build
 - **Deploy:** Main'e merge = otomatik deploy (Vercel + Railway)
@@ -105,10 +119,11 @@ Bu dosya Claude Code'un proje hafizasidir. Her oturumda otomatik okunur.
 - **Repo:** GitHub Private — https://github.com/acarberk/tracklistd
 
 ### Kurulum Sırası (config & tooling)
+
 1. ~~TypeScript Config~~ ✅ (packages/config/tsconfig/ — base, nextjs, nestjs, library)
-2. ESLint + Prettier
-3. Husky + lint-staged
-4. Commitlint
+2. ~~ESLint + Prettier~~ ✅ (packages/config/eslint/ — base, nextjs, nestjs, library presets)
+3. ~~Husky + lint-staged~~ ✅ (pre-commit: eslint --fix + prettier, commit-msg: commitlint)
+4. ~~Commitlint~~ ✅ (Conventional Commits — feat/fix/chore/docs/refactor/test/perf/ci)
 5. Semantic Versioning + Otomatik Changelog
 6. GitHub Actions CI/CD
 7. SonarQube (SonarCloud)
@@ -119,19 +134,22 @@ Bu dosya Claude Code'un proje hafizasidir. Her oturumda otomatik okunur.
 ## Rakip Analizi (Tamamlandı)
 
 ### Ana Rakipler
-| Rakip | Güçlü Yön | Kritik Eksik |
-|-------|-----------|-------------|
-| **Backloggd** (650K+ kullanıcı) | En büyük topluluk, review/liste sistemi | Mobil yok, sync yok, achievement yok |
-| **GG** ($4.99/ay) | Tek native mobil app | Agresif paywall, sync sınırlı |
-| **Exophase** | En kapsamlı achievement tracker (10+ platform) | Koleksiyon yönetimi/review yok, eski UI |
-| **HowLongToBeat** | Oyun süre veritabanı (sektör referansı) | Tracker olarak zayıf, mobil bozuk |
+
+| Rakip                               | Güçlü Yön                                                                                                        | Kritik Eksik                                                   |
+| ----------------------------------- | ---------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------- |
+| **Backloggd** (650K+ kullanıcı)     | En büyük topluluk, review/liste sistemi                                                                          | Mobil yok, sync yok, achievement yok                           |
+| **GG** ($4.99/ay)                   | Tek native mobil app                                                                                             | Agresif paywall, sync sınırlı                                  |
+| **Exophase**                        | En kapsamlı achievement tracker (10+ platform)                                                                   | Koleksiyon yönetimi/review yok, eski UI                        |
+| **HowLongToBeat**                   | Oyun süre veritabanı (sektör referansı)                                                                          | Tracker olarak zayıf, mobil bozuk                              |
 | **Infinite Backlog** (€6/ay Legend) | En kapsamlı tracker: Steam/PSN/Xbox/GOG sync, achievement, play log/session, XP/level, custom tags, progress bar | Küçük topluluk, mobil yok, gamification basit, UI çekici değil |
-| **Grouvee** | Sınırsız özel raf sistemi ($10/yıl) | Eski UI, sadece Steam import |
+| **Grouvee**                         | Sınırsız özel raf sistemi ($10/yıl)                                                                              | Eski UI, sadece Steam import                                   |
 
 ### Veri Kaynağı
+
 - **RAWG API** — 500K+ oyun veritabanı (genre, platform, Metacritic, screenshot, achievement)
 
 ### Pazar Boşlukları (Tracklistd Fırsatları)
+
 1. **Mobil + Web birlikte ücretsiz** — Backloggd web-only, GG mobil paywalled
 2. **Ücretsiz otomatik sync** — Rakipler premium'a koyuyor
 3. **Koleksiyon + Achievement birlikte** — Backloggd'da achievement yok, Exophase'de koleksiyon yok
@@ -144,12 +162,14 @@ Bu dosya Claude Code'un proje hafizasidir. Her oturumda otomatik okunur.
 ## Oyuncu Beklentileri (Tamamlandı)
 
 ### Hedef Kitle Segmentleri
+
 1. **Backlog Yöneticisi** (Ana hedef) — 100+ oyunu var, takip edemiyor, otomatik sync istiyor
 2. **Achievement Hunter** — Platinum/completion peşinde, cross-platform achievement takibi
 3. **İstatistik Meraklısı** — Detaylı stats, yıllık özet, genre analizi
 4. **Sosyal Oyuncu** — Arkadaş aktivitesi, karşılaştırma, ortak oyun keşfi
 
 ### Kritik Pain Points
+
 1. **Retention krizi** — İlk hafta heyecan, 1 ay sonra bırakma (tüm tracker'larda)
 2. **Mobil uygulama eksik** — Çoğu kişi telefondan takip etmek istiyor
 3. **Elle ekleme zahmetli** — 500+ oyun kütüphanesi tek tek eklenemez
@@ -157,6 +177,7 @@ Bu dosya Claude Code'un proje hafizasidir. Her oturumda otomatik okunur.
 5. **Gamification yok** — Tracker'lar "sıkıcı araç" olarak kalıyor
 
 ### Retention Çözümü: Gamification (Duolingo + Strava modellerinden)
+
 - Streak sistemi → +60% bağlılık (Duolingo referans)
 - Liga leaderboard → +25% aktivite (Duolingo referans)
 - Sosyal kudos → %80 retention 9 hafta (Strava referans)
@@ -166,6 +187,7 @@ Bu dosya Claude Code'un proje hafizasidir. Her oturumda otomatik okunur.
 ## Gamification Tasarımı (Tamamlandı)
 
 ### Mekanikler
+
 1. **Streak** — Günlük katkı serisi (freeze, shield, milestone, recovery, wager)
 2. **XP** — Oyun ekle (10), review (30), achievement (5), bitirme (25), kudos (2)
 3. **Level** — Logaritmik eğri: Level 1 (0 XP) → Level 50 (175K XP), unvanlar
@@ -181,7 +203,9 @@ Bu dosya Claude Code'un proje hafizasidir. Her oturumda otomatik okunur.
 ## Monetization (Tamamlandı)
 
 ### Free vs Premium
+
 **Tracklistd Free (Ücretsiz):**
+
 - Sınırsız oyun ekleme, durum takibi, 1-10 puan
 - Steam/PSN/Xbox sync (günde 1 kez)
 - Tüm gamification (streak, XP, level, leaderboard, rozetler)
@@ -189,6 +213,7 @@ Bu dosya Claude Code'un proje hafizasidir. Her oturumda otomatik okunur.
 - Minimal banner reklam
 
 **Tracklistd Pro ($3.99/ay veya $29.99/yıl):**
+
 - Reklamsız
 - Gerçek zamanlı sync (anlık)
 - Gelişmiş istatistikler + yıllık özet (Wrapped)
@@ -199,6 +224,7 @@ Bu dosya Claude Code'un proje hafizasidir. Her oturumda otomatik okunur.
 - Veri export (CSV/JSON)
 
 ### Ek Gelir Kaynakları
+
 - **Affiliate** — Oyun satış yönlendirme komisyonu (Humble Bundle vb.)
 - **Promoted Games** — İndie geliştiriciler için sponsorlu keşfet alanı
 - **Kozmetik Mağaza** — Profil temaları, çerçeveler ($0.99-$1.99)
@@ -210,15 +236,23 @@ Bu dosya Claude Code'un proje hafizasidir. Her oturumda otomatik okunur.
 ## MVP Kapsamı — Dengeli MVP (v1.0)
 
 ### Auth & Kullanıcı: Email + Steam OAuth + JWT + Profil sayfası/düzenleme + Şifre sıfırlama
+
 ### Koleksiyon: RAWG API arama + ekleme + durum (5 kategori) + puan (1-10) + review + liste (5) + filtre
+
 ### Steam Sync: Hesap bağlama + kütüphane sync + playtime + achievement (Bull Queue async)
+
 ### Gamification: XP + Level (logaritmik) + Streak (freeze + milestone)
+
 ### Sosyal: Arkadaş takip + activity feed
+
 ### Stats: Temel istatistikler (oyun sayısı, genre/platform dağılımı, oyun süreleri)
+
 ### Sayfalar: Ana sayfa + oyun detay + profil (public) + koleksiyon
+
 ### Altyapı: i18n (TR/EN) + dark/light mode + SEO (SSG) + rate limiting + error handling
 
 ### Yol Haritası
+
 - **v1.1** (MVP+1-2 ay): Liga/Leaderboard, Rozetler, Challenge, Premium/Stripe, Google/Discord OAuth, Kudos, Gelişmiş stats
 - **v1.2** (v1.1+2-3 ay): PSN/Xbox sync, Sezonluk sistem, Kozmetik mağaza, Year in Review, Arkadaş karşılaştırma
 
@@ -227,6 +261,7 @@ Bu dosya Claude Code'un proje hafizasidir. Her oturumda otomatik okunur.
 ## UI/UX Tasarımı (Tamamlandı)
 
 ### Sayfalar
+
 - Ana Sayfa (giriş yok: hero + popüler + CTA / giriş var: streak + feed + challenge + oynuyorum)
 - Oyun Detay (kapak, meta, koleksiyon kontrol, achievement, review, benzer oyunlar)
 - Profil (banner, avatar, level, streak, rozet vitrini, stats, aktivite, top oyunlar)
@@ -236,10 +271,12 @@ Bu dosya Claude Code'un proje hafizasidir. Her oturumda otomatik okunur.
 - Giriş/Kayıt (Steam OAuth + email/şifre, minimal)
 
 ### Mobil Navigasyon: Bottom Tab Bar
+
 - 🏠 Ana | 🔍 Keşfet | ➕ Hızlı Ekle | 📚 Koleksiyon | 👤 Profil
 - ➕ ortada = ana aksiyon (streak koruma) — Instagram/Duolingo modeli
 
 ### Kritik Akışlar
+
 1. Kayıt → Onboarding (platform seç → Steam bağla → sync → ilk puan) → Streak başlar
 2. Günlük kullanım: Uygulama aç → streak/challenge gör → 30sn'de aksiyon → XP kazan
 3. Oyun keşfi: Arama/keşfet → detay → koleksiyona ekle → durum/puan → XP
@@ -262,6 +299,7 @@ Bu dosya Claude Code'un proje hafizasidir. Her oturumda otomatik okunur.
 ## Uygulama Sahibi İsteği
 
 ### Öğretme Yaklaşımı (HER KOD YAZIMINDA UYGULANACAK)
+
 - **Adım adım ilerle** — küçük, anlaşılır parçalar halinde kod yaz
 - **5N1K açıklaması** — her kod bloğu için:
   - **Ne:** Bu kod ne yapıyor?
@@ -272,12 +310,17 @@ Bu dosya Claude Code'un proje hafizasidir. Her oturumda otomatik okunur.
   - **Alternatifler:** Başka nasıl yazılabilirdi? Neden bu yöntemi tercih ettik?
 - **Terim açıklaması** — her yeni teknik terimi ilk kullanımda açıkla
 - **Kısa kod blokları** — büyük dosyaları parça parça yaz, her parçayı açıkla, review'a sun
-- **Quiz/Challenge** — uygun yerlerde küçük quizler veya mini challenge'lar ver
+- **Mülakat soruları** — her konunun sonunda 1-2 adet senior seviyesinde teknik mülakat sorusu sor. Soru formatı:
+  - Gerçek mülakatlarda sorulacak tarzda, açık uçlu ve düşündürücü olsun
+  - "Neden X yerine Y kullandın?", "Bu yaklaşımın trade-off'ları neler?", "Production'da bu nasıl ölçeklenir?" gibi derinlikli sorular
+  - Cevabı basit "evet/hayır" olmayan, kendi kelimelerinle açıklaman gereken sorular
+  - Her soru kendi içinde bağımsız, proje bağlamına oturtulmuş olsun
 - Proje amacı: hem ürün çıkarmak hem öğrenmek — ikisi birlikte
 
 ### Kod Kalitesi Standartları (ZORUNLU)
 
 #### SOLID Prensipleri
+
 - **S — Single Responsibility:** Her dosya, her fonksiyon, her class TEK bir iş yapar
 - **O — Open/Closed:** Yeni özellik eklerken mevcut kodu değiştirme, genişlet
 - **L — Liskov Substitution:** Alt tipler, üst tiplerin yerine geçebilmeli
@@ -285,6 +328,7 @@ Bu dosya Claude Code'un proje hafizasidir. Her oturumda otomatik okunur.
 - **D — Dependency Inversion:** Somut sınıflara değil, soyutlamalara (interface) bağlan
 
 #### React / Next.js Best Practices
+
 - **Thinking in React:** UI'ı component hiyerarşisine böl → state'i minimal tut → veri yukarıdan aşağıya aksın
 - **Server Components öncelikli:** Mümkün olan her yerde Server Component kullan, "use client" sadece gerektiğinde
 - **Composition over Inheritance:** Component'ları composition ile birleştir, inheritance kullanma
@@ -295,6 +339,7 @@ Bu dosya Claude Code'un proje hafizasidir. Her oturumda otomatik okunur.
 - **Error Boundary:** Hata yakalama için Error Boundary pattern'ı uygula
 
 #### NestJS Best Practices
+
 - **Modüler mimari:** Her domain (auth, game, user, sync) kendi modülünde
 - **DTO pattern:** Gelen/giden veri için her zaman DTO (Data Transfer Object) kullan
 - **Guard/Interceptor/Pipe:** Cross-cutting concern'leri decorator ile çöz
@@ -303,6 +348,7 @@ Bu dosya Claude Code'un proje hafizasidir. Her oturumda otomatik okunur.
 - **Config validation:** Environment variable'ları Zod ile validate et
 
 #### Güvenlik (EN ÖNCELİKLİ)
+
 - **Input validation:** ASLA kullanıcı girdisine güvenme, her şeyi Zod ile validate et
 - **SQL Injection:** Prisma parameterized query kullan, raw SQL'den kaçın
 - **XSS koruması:** Kullanıcı girdisini render etmeden önce sanitize et
@@ -316,7 +362,32 @@ Bu dosya Claude Code'un proje hafizasidir. Her oturumda otomatik okunur.
 - **Dependency audit:** npm audit ile düzenli zafiyet kontrolü
 - **Least privilege:** Her servis/kullanıcı sadece ihtiyaç duyduğu yetkiye sahip
 
+### Paket Versiyon Politikası (ZORUNLU)
+
+**Her paket kurulumundan önce npm'den güncel versiyon kontrol edilmeli.**
+
+#### Kontrol Komutu
+
+```bash
+# Tek paket için
+npm show <paket-adi> version
+
+# Birden fazla paket için
+npm show <paket1> <paket2> version
+
+# Projedeki tüm paketlerin güncel olup olmadığını kontrol et
+pnpm dlx npm-check-updates --root --workspaces
+```
+
+#### Kurallar
+
+- `package.json`'a yazılacak versiyon: `^X.Y.Z` (caret — minor/patch güncellemeleri otomatik alınır)
+- Major versiyon değişikliklerinde (ör. v8 → v9) breaking change olup olmadığı kontrol edilmeli
+- `pnpm install` sonrası `pnpm-lock.yaml`'da gerçek kurulu versiyon görülür — bu kaynak of truth
+- **`latest` veya `*` kullanma** — her zaman explicit versiyon numarası yaz
+
 #### Genel Kod Standartları
+
 - **TypeScript strict mode:** `strict: true`, `noImplicitAny: true`
 - **ESLint + Prettier:** Tutarlı kod stili, otomatik format
 - **Naming convention:** camelCase (değişken/fonksiyon), PascalCase (component/class/type), UPPER_SNAKE_CASE (sabit)
