@@ -1,13 +1,10 @@
-# Dependencies
 node_modules/
 
-# Build outputs
 dist/
 .next/
 .turbo/
 out/
 
-# Environment variables (GÜVENLİK: ASLA commit edilmez!)
 .env
 .env.local
 .env.development.local
@@ -15,28 +12,25 @@ out/
 .env.production.local
 .env*.local
 
-# IDE
 .vscode/
 .idea/
 *.swp
 *.swo
 
-# OS
 .DS_Store
 Thumbs.db
 
-# Debug
 npm-debug.log*
 pnpm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# Test coverage
 coverage/
 
-# Prisma
 prisma/*.db
 prisma/*.db-journal
 
-# Misc
 *.tsbuildinfo
+
+CLAUDE.md
+.claude/
