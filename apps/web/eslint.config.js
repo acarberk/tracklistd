@@ -7,8 +7,6 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 /** @type {import("eslint").Linter.Config[]} */
 const config = [
   ...nextjsConfig,
-
-  // Bu app'in tsconfig'ini doğru yere yönlendir
   {
     files: ['**/*.ts', '**/*.tsx'],
     languageOptions: {

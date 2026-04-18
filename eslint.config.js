@@ -10,22 +10,11 @@ import { fileURLToPath } from 'node:url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-/**
- * Root ESLint config — yalnızca lint-staged için kullanılır.
- *
- * Her workspace paketinin kendi eslint.config.js'i vardır (pnpm turbo lint için).
- * Bu config ise git commit sırasında lint-staged'in root'tan çağırdığı ESLint içindir.
- * Tüm paketleri kapsar, dosya yoluna göre doğru kuralları uygular.
- */
-
 /** @type {import("eslint").Linter.Config[]} */
 const config = [
-  // Tüm paketler için global ignore listesi
   {
     ignores: ['**/node_modules/**', '**/dist/**', '**/.next/**', '**/.turbo/**', '**/coverage/**'],
   },
-
-  // TypeScript dosyaları — tüm paketlerde geçerli temel kurallar
   {
     files: ['apps/**/*.ts', 'apps/**/*.tsx', 'packages/**/*.ts', 'packages/**/*.tsx'],
     languageOptions: {
@@ -72,8 +61,6 @@ const config = [
       'no-debugger': 'error',
     },
   },
-
-  // React dosyaları (apps/web + packages/ui)
   {
     files: ['apps/web/**/*.tsx', 'apps/web/**/*.jsx', 'packages/ui/**/*.tsx'],
     plugins: {
@@ -88,8 +75,6 @@ const config = [
       'react-hooks/exhaustive-deps': 'warn',
     },
   },
-
-  // Backend: console + unsafe kuralları gevşet
   {
     files: ['apps/api/**/*.ts'],
     rules: {
@@ -99,8 +84,6 @@ const config = [
       '@typescript-eslint/no-unsafe-member-access': 'off',
     },
   },
-
-  // Test dosyaları: tüm strict kuralları kapat
   {
     files: ['**/*.spec.ts', '**/*.test.ts', '**/*.e2e-spec.ts'],
     rules: {
@@ -109,8 +92,6 @@ const config = [
       'no-console': 'off',
     },
   },
-
-  // Prettier son sırada — formatting kurallarını kapatır
   prettierConfig,
 ];
 
