@@ -1,0 +1,56 @@
+version: 2
+
+updates:
+  - package-ecosystem: 'npm'
+    directories:
+      - '/'
+      - '/apps/web'
+      - '/apps/api'
+      - '/packages/config'
+      - '/packages/shared'
+      - '/packages/ui'
+    schedule:
+      interval: 'weekly'
+      day: 'monday'
+      time: '06:00'
+      timezone: 'Europe/Istanbul'
+    open-pull-requests-limit: 10
+    groups:
+      prod-dependencies:
+        dependency-type: 'production'
+        update-types:
+          - 'minor'
+          - 'patch'
+      dev-dependencies:
+        dependency-type: 'development'
+        update-types:
+          - 'minor'
+          - 'patch'
+    ignore:
+      - dependency-name: '*'
+        update-types:
+          - 'version-update:semver-major'
+    commit-message:
+      prefix: 'chore(deps)'
+      prefix-development: 'chore(deps-dev)'
+      include: 'scope'
+    labels:
+      - 'dependencies'
+
+  - package-ecosystem: 'github-actions'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+      day: 'monday'
+      time: '06:00'
+      timezone: 'Europe/Istanbul'
+    open-pull-requests-limit: 5
+    groups:
+      github-actions:
+        patterns:
+          - '*'
+    commit-message:
+      prefix: 'ci(deps)'
+    labels:
+      - 'dependencies'
+      - 'ci'
