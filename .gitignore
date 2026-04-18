@@ -34,3 +34,5 @@ prisma/*.db-journal
 
 CLAUDE.md
 .claude/
+
+docs/internal/
