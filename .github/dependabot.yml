@@ -31,8 +31,8 @@ updates:
         update-types:
           - 'version-update:semver-major'
     commit-message:
-      prefix: 'chore(deps)'
-      prefix-development: 'chore(deps-dev)'
+      prefix: 'chore'
+      prefix-development: 'chore'
       include: 'scope'
     labels:
       - 'dependencies'
@@ -50,7 +50,8 @@ updates:
         patterns:
           - '*'
     commit-message:
-      prefix: 'ci(deps)'
+      prefix: 'ci'
+      include: 'scope'
     labels:
       - 'dependencies'
       - 'ci'
