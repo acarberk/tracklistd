@@ -7,8 +7,6 @@ import baseConfig from './base.js';
 /** @type {import("eslint").Linter.Config[]} */
 const libraryConfig = [
   ...baseConfig,
-
-  // TSX/JSX dosyaları için React kuralları (packages/ui component'ları)
   {
     files: ['**/*.tsx', '**/*.jsx'],
     languageOptions: {
@@ -33,8 +31,6 @@ const libraryConfig = [
       'react-hooks/exhaustive-deps': 'warn',
     },
   },
-
-  // Saf TypeScript dosyaları (packages/shared — hem browser hem node'da çalışabilir)
   {
     files: ['**/*.ts'],
     languageOptions: {
