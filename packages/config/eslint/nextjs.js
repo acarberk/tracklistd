@@ -7,8 +7,6 @@ import baseConfig from './base.js';
 /** @type {import("eslint").Linter.Config[]} */
 const nextjsConfig = [
   ...baseConfig,
-
-  // React + browser ortamı
   {
     files: ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx'],
     languageOptions: {
@@ -23,32 +21,24 @@ const nextjsConfig = [
     },
     settings: {
       react: {
-        // node_modules'dan React versiyonunu otomatik algıla
         version: 'detect',
       },
     },
     rules: {
-      // React 17+ JSX transform: artık her dosyada `import React` gerekmez
       ...reactPlugin.configs['jsx-runtime'].rules,
       ...reactHooksPlugin.configs.recommended.rules,
-
-      // React overrides
-      'react/prop-types': 'off', // TypeScript zaten tipleri kontrol eder
+      'react/prop-types': 'off',
       'react/display-name': 'warn',
-      'react/no-unescaped-entities': 'off', // JSX text'te ' " gibi karakterlere izin ver
+      'react/no-unescaped-entities': 'off',
       'react-hooks/exhaustive-deps': 'warn',
     },
   },
-
-  // Next.js App Router Server Components: async olabilir ama await olmayabilir
   {
     files: ['**/app/**/*.ts', '**/app/**/*.tsx'],
     rules: {
       '@typescript-eslint/require-await': 'off',
     },
   },
-
-  // Server-side dosyalarda console kullanımına izin ver
   {
     files: ['**/app/**/*.ts', '**/pages/**/*.ts', '**/server/**/*.ts', '**/middleware.ts'],
     rules: {

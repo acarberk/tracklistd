@@ -118,6 +118,59 @@ Bu dosya Claude Code'un proje hafizasidir. Her oturumda otomatik okunur.
 - **Commit'lerde Co-Authored-By satırı OLMAYACAK**
 - **Repo:** GitHub Private — https://github.com/acarberk/tracklistd
 
+### Kod Yazım Kuralları (ZORUNLU — İstisnasız)
+
+**Dil:**
+
+- Kod içinde **HİÇBİR Türkçe karakter/kelime OLMAYACAK**
+- Kapsam: değişken isimleri, fonksiyon isimleri, class isimleri, dosya isimleri, string literal'lar, enum değerleri, log mesajları, error mesajları, test açıklamaları, README (kod kısımları), commit mesajları, PR açıklamaları, branch isimleri
+- İstisna yok. Kullanıcıya döndürülen i18n mesajları bile kod içinde `en` anahtarıyla yazılır, Türkçe çeviri `locales/tr.json`'a gider
+
+**Yorum Satırları:**
+
+- **Kod içinde yorum YAZMAYACAĞIM** (`//`, `/* */`, `#`, `<!-- -->`, docstring hariç özel durumlar)
+- Kod kendini anlatmalı — anlamlı isim + küçük fonksiyon + net tip imzası
+- İstisna (sadece bunlar):
+  - JSDoc/TSDoc — **public API** için (library export'ları, shared util'ler)
+  - `// @ts-expect-error` / `// eslint-disable-next-line` — teknik zorunluluk
+  - Config dosyalarında zorunlu syntax (örn. shebang `#!/usr/bin/env`)
+  - Üçüncü parti kütüphane gerektirdiğinde (örn. `/// <reference types="..." />`)
+- Bir şeyi "açıklamak" ihtiyacı hissedilirse → **fonksiyona ayır**, adıyla anlat
+
+**Commit & PR Yazım:**
+
+- Commit mesajları ve PR açıklamaları **İngilizce**
+- **CLAUDE.md referansı yasak** — commit'lerde, PR'larda, kodda bahsedilmez
+- **AI-written görünümü yasak:**
+  - Emoji yok (teknik çıktı + badge hariç)
+  - Abartılı başlık yok
+  - Gereksiz markdown süsü yok
+  - "Generated with Claude" imzası yok
+- Commit mesaj stili: Kısa, teknik, doğrudan. Conventional Commits formatı
+- PR body stili: Değişikliğin "ne" ve "neden"ini kısa anlat. Test plan ekle
+
+### Main Branch Koruma Sözü (ZORUNLU — Claude'un Kendi Kuralı)
+
+> GitHub personal private repo'larda server-side branch protection enforce edilmiyor.
+> Bu yüzden main branch koruması **Claude'un disipline uymasına** bağlı.
+
+**Claude olarak söz veriyorum:**
+
+- ❌ **ASLA** `main` branch'ine doğrudan commit atmayacağım
+- ❌ **ASLA** `git push origin main` komutunu çalıştırmayacağım
+- ❌ **ASLA** `git push --force` kullanmayacağım (kullanıcı açıkça istemezse)
+- ✅ **Her değişiklik** için önce feature branch oluşturacağım: `git checkout -b <type>/<kebab-case-isim>`
+- ✅ Branch'i push edip **PR açacağım** (gh CLI veya manuel)
+- ✅ CI + CodeQL geçtikten sonra **kullanıcıdan onay** alıp merge edeceğim
+- ✅ Merge sonrası **feature branch'i sileceğim** (lokal + remote)
+
+**İstisna — Açık kullanıcı talimatı:**
+Kullanıcı "acil, doğrudan main'e commit at" derse bu kural geçici olarak gevşer.
+Ama varsayılan olarak HER ZAMAN feature branch + PR akışı.
+
+**Ek savunma katmanı:**
+`.husky/pre-push` hook'u main'e push'u lokal olarak da engeller (bkz. .husky/pre-push).
+
 ### Kurulum Sırası (config & tooling)
 
 1. ~~TypeScript Config~~ ✅ (packages/config/tsconfig/ — base, nextjs, nestjs, library)
@@ -126,8 +179,14 @@ Bu dosya Claude Code'un proje hafizasidir. Her oturumda otomatik okunur.
 4. ~~Commitlint~~ ✅ (Conventional Commits — feat/fix/chore/docs/refactor/test/perf/ci)
 5. ~~Semantic Versioning + Otomatik Changelog~~ ✅ (Changesets — pnpm changeset → version → tag)
 6. ~~GitHub Actions CI/CD~~ ✅ (.github/workflows/ci.yml — lint, type-check, test, build)
-7. SonarQube (SonarCloud)
-8. ZAP Scan (OWASP)
+7. ~~CodeQL~~ ✅ (.github/workflows/codeql.yml — SAST güvenlik + kalite, haftalık schedule)
+8. Dependabot (dependency güvenlik + otomatik güncelleme)
+
+### İleride (İhtiyaç Olunca)
+
+- **Codecov** — ilk test modülü yazıldığında
+- **OWASP ZAP** — production deploy sonrası (DAST runtime güvenlik)
+- **SonarCloud** — takım 3+ kişi olunca veya public yapınca
 
 ---
 
