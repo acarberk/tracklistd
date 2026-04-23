@@ -4,7 +4,11 @@ import { join } from 'path';
 
 import { defineConfig } from 'prisma/config';
 
-const connectionString = process.env.DATABASE_URL;
+const isGenerate = process.argv.includes('generate');
+
+const connectionString =
+  process.env.DATABASE_URL ??
+  (isGenerate ? 'postgresql://placeholder:placeholder@localhost:5432/placeholder' : undefined);
 
 if (!connectionString) {
   throw new Error('DATABASE_URL is not defined');
