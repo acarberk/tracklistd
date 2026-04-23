@@ -12,9 +12,8 @@ import { EnvService } from '../config/env.service';
       useFactory: (envService: EnvService) => ({
         pinoHttp: {
           level: envService.isProduction ? 'info' : 'debug',
-          transport: envService.isProduction
-            ? undefined
-            : {
+          transport: envService.isDevelopment
+            ? {
                 target: 'pino-pretty',
                 options: {
                   singleLine: true,
@@ -22,7 +21,8 @@ import { EnvService } from '../config/env.service';
                   translateTime: 'SYS:HH:MM:ss.l',
                   ignore: 'pid,hostname',
                 },
-              },
+              }
+            : undefined,
           redact: ['req.headers.authorization', 'req.headers.cookie'],
         },
       }),

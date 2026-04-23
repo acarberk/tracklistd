@@ -13,6 +13,7 @@ async function bootstrap(): Promise<void> {
   });
 
   app.useLogger(app.get(Logger));
+  app.enableShutdownHooks();
 
   const envService = app.get(EnvService);
   const port = envService.port;
