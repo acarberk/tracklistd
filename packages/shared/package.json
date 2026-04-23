@@ -2,17 +2,32 @@
   "name": "@tracklistd/shared",
   "version": "0.0.1",
   "private": true,
-  "type": "module",
   "description": "Shared types, utilities, and Zod schemas",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./auth": {
+      "types": "./dist/auth/index.d.ts",
+      "default": "./dist/auth/index.js"
+    }
+  },
   "scripts": {
     "lint": "eslint .",
     "type-check": "tsc --noEmit",
-    "build": "echo 'build placeholder'",
+    "build": "tsc -p tsconfig.build.json",
+    "clean": "rm -rf dist",
     "test": "echo 'no tests yet'"
   },
   "devDependencies": {
     "@tracklistd/config": "workspace:*",
     "eslint": "^9.24.0",
     "typescript": "^6.0.3"
+  },
+  "dependencies": {
+    "zod": "^4.3.6"
   }
 }
