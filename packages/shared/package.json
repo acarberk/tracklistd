@@ -4,6 +4,16 @@
   "private": true,
   "type": "module",
   "description": "Shared types, utilities, and Zod schemas",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    },
+    "./auth": {
+      "types": "./src/auth/index.ts",
+      "default": "./src/auth/index.ts"
+    }
+  },
   "scripts": {
     "lint": "eslint .",
     "type-check": "tsc --noEmit",
@@ -14,5 +24,8 @@
     "@tracklistd/config": "workspace:*",
     "eslint": "^9.24.0",
     "typescript": "^6.0.3"
+  },
+  "dependencies": {
+    "zod": "^4.3.6"
   }
 }
