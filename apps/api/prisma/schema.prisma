@@ -1,0 +1,121 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id            String  @id @default(uuid()) @db.Uuid
+  email         String  @unique
+  emailVerified Boolean @default(false) @map("email_verified")
+  passwordHash  String? @map("password_hash")
+  username      String  @unique
+  displayName   String  @map("display_name")
+  avatarUrl     String? @map("avatar_url")
+  bio           String?
+  country       String? @db.Char(2)
+
+  googleId String? @unique @map("google_id")
+  appleId  String? @unique @map("apple_id")
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  platformIntegrations PlatformIntegration[]
+  refreshTokens        RefreshToken[]
+  emailTokens          EmailVerificationToken[]
+  passwordResetTokens  PasswordResetToken[]
+
+  @@index([email])
+  @@index([username])
+  @@map("users")
+}
+
+enum Platform {
+  STEAM
+  PSN
+  XBOX
+
+  @@map("platform")
+}
+
+enum SyncStatus {
+  PENDING
+  SYNCING
+  COMPLETED
+  FAILED
+  DISABLED
+
+  @@map("sync_status")
+}
+
+model PlatformIntegration {
+  id             String     @id @default(uuid()) @db.Uuid
+  userId         String     @map("user_id") @db.Uuid
+  user           User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  platform       Platform
+  externalId     String     @map("external_id")
+  externalHandle String?    @map("external_handle")
+  accessToken    String?    @map("access_token")
+  refreshToken   String?    @map("refresh_token")
+  metadata       Json?
+  connectedAt    DateTime   @default(now()) @map("connected_at")
+  lastSyncAt     DateTime?  @map("last_sync_at")
+  syncStatus     SyncStatus @default(PENDING) @map("sync_status")
+
+  @@unique([userId, platform])
+  @@unique([platform, externalId])
+  @@index([userId])
+  @@map("platform_integrations")
+}
+
+model RefreshToken {
+  id         String    @id @default(uuid()) @db.Uuid
+  userId     String    @map("user_id") @db.Uuid
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash  String    @unique @map("token_hash")
+  family     String    @db.Uuid
+  rotation   Int       @default(0)
+  expiresAt  DateTime  @map("expires_at")
+  createdAt  DateTime  @default(now()) @map("created_at")
+  revokedAt  DateTime? @map("revoked_at")
+  replacedBy String?   @map("replaced_by") @db.Uuid
+  userAgent  String?   @map("user_agent")
+  ipAddress  String?   @map("ip_address")
+
+  @@index([userId])
+  @@index([family])
+  @@index([expiresAt])
+  @@map("refresh_tokens")
+}
+
+model EmailVerificationToken {
+  id        String    @id @default(uuid()) @db.Uuid
+  userId    String    @map("user_id") @db.Uuid
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash String    @unique @map("token_hash")
+  expiresAt DateTime  @map("expires_at")
+  usedAt    DateTime? @map("used_at")
+  createdAt DateTime  @default(now()) @map("created_at")
+
+  @@index([userId])
+  @@index([expiresAt])
+  @@map("email_verification_tokens")
+}
+
+model PasswordResetToken {
+  id        String    @id @default(uuid()) @db.Uuid
+  userId    String    @map("user_id") @db.Uuid
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash String    @unique @map("token_hash")
+  expiresAt DateTime  @map("expires_at")
+  usedAt    DateTime? @map("used_at")
+  createdAt DateTime  @default(now()) @map("created_at")
+
+  @@index([userId])
+  @@index([expiresAt])
+  @@map("password_reset_tokens")
+}
