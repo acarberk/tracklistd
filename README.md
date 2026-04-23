@@ -66,12 +66,31 @@ packages/
 
 - Node.js 22+
 - pnpm 10.32+
+- Docker 24+ with Compose v2
 
 ### Install
 
 ```bash
 pnpm install
+cp .env.example .env
 ```
+
+### Local Services
+
+PostgreSQL and Redis run in Docker for local development.
+
+```bash
+docker compose up -d       # start postgres and redis
+docker compose ps          # verify containers are healthy
+docker compose logs -f     # follow logs
+docker compose down        # stop containers (keeps data)
+docker compose down -v     # stop and wipe volumes (fresh start)
+```
+
+Connections:
+
+- PostgreSQL: `postgresql://tracklistd:<password>@localhost:5432/tracklistd`
+- Redis: `redis://:<password>@localhost:6379`
 
 ### Common Commands
 
