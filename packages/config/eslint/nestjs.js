@@ -22,6 +22,8 @@ const nestjsConfig = [
       '@typescript-eslint/no-unsafe-argument': 'warn',
       'no-console': 'off',
       '@typescript-eslint/no-useless-constructor': 'off',
+      '@typescript-eslint/no-extraneous-class': 'off',
+      '@typescript-eslint/use-unknown-in-catch-callback-variable': 'off',
     },
   },
   {
