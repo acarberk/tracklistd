@@ -45,6 +45,7 @@ import { ZodValidationPipe } from './zod-validation.pipe';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 
 const REFRESH_COOKIE = 'refresh_token';
+const REFRESH_COOKIE_PATH = '/auth';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -90,7 +91,7 @@ export class AuthController {
     @Req() req: FastifyRequest,
     @Res({ passthrough: true }) res: FastifyReply,
   ): Promise<RefreshResponseDto> {
-    const cookie = this.readRefreshCookie(req);
+    const cookie = req.cookies[REFRESH_COOKIE];
     if (!cookie) {
       throw new UnauthorizedException('Missing refresh cookie');
     }
@@ -106,7 +107,7 @@ export class AuthController {
     @Req() req: FastifyRequest,
     @Res({ passthrough: true }) res: FastifyReply,
   ): Promise<void> {
-    const cookie = this.readRefreshCookie(req);
+    const cookie = req.cookies[REFRESH_COOKIE];
     if (cookie) {
       await this.auth.logout(cookie);
     }
@@ -130,46 +131,32 @@ export class AuthController {
     };
   }
 
-  private readRefreshCookie(req: FastifyRequest): string | undefined {
-    const header = req.headers.cookie;
-    if (!header) {
-      return undefined;
-    }
-    const match = header.split(';').find((part) => part.trim().startsWith(`${REFRESH_COOKIE}=`));
-    if (!match) {
-      return undefined;
-    }
-    return decodeURIComponent(match.split('=').slice(1).join('=').trim());
-  }
-
   private setRefreshCookie(res: FastifyReply, value: string, expiresAt: Date): void {
-    const isSecure = this.env.isProduction;
-    const cookie = [
-      `${REFRESH_COOKIE}=${encodeURIComponent(value)}`,
-      `Expires=${expiresAt.toUTCString()}`,
-      'HttpOnly',
-      'Path=/api/auth',
-      'SameSite=Lax',
-      isSecure ? 'Secure' : null,
-      this.env.cookieDomain ? `Domain=${this.env.cookieDomain}` : null,
-    ]
-      .filter(Boolean)
-      .join('; ');
-    void res.header('Set-Cookie', cookie);
+    void res.header('Set-Cookie', this.serializeCookie(value, expiresAt));
   }
 
   private clearRefreshCookie(res: FastifyReply): void {
-    const cookie = [
-      `${REFRESH_COOKIE}=`,
-      'Expires=Thu, 01 Jan 1970 00:00:00 GMT',
+    void res.header('Set-Cookie', this.serializeCookie('', new Date(0), { clearing: true }));
+  }
+
+  private serializeCookie(
+    value: string,
+    expiresAt: Date,
+    options: { clearing?: boolean } = {},
+  ): string {
+    const parts: string[] = [
+      `${REFRESH_COOKIE}=${options.clearing ? '' : encodeURIComponent(value)}`,
+      `Expires=${expiresAt.toUTCString()}`,
       'HttpOnly',
-      'Path=/api/auth',
+      `Path=${REFRESH_COOKIE_PATH}`,
       'SameSite=Lax',
-      this.env.isProduction ? 'Secure' : null,
-      this.env.cookieDomain ? `Domain=${this.env.cookieDomain}` : null,
-    ]
-      .filter(Boolean)
-      .join('; ');
-    void res.header('Set-Cookie', cookie);
+    ];
+    if (this.env.isProduction) {
+      parts.push('Secure');
+    }
+    if (this.env.cookieDomain) {
+      parts.push(`Domain=${this.env.cookieDomain}`);
+    }
+    return parts.join('; ');
   }
 }

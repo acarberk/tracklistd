@@ -1,7 +1,6 @@
 import { createHash, randomUUID } from 'crypto';
 
 import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
-import { type RefreshToken } from '@prisma/client';
 
 import { EnvService } from '../config/env.service';
 import { PrismaService } from '../prisma/prisma.service';
@@ -25,6 +24,7 @@ interface IssueRefreshOptions {
 }
 
 export interface IssuedRefresh {
+  jti: string;
   rawToken: string;
   expiresAt: Date;
   family: string;
@@ -74,7 +74,7 @@ export class TokenService {
       },
     });
 
-    return { rawToken, expiresAt, family, rotation };
+    return { jti, rawToken, expiresAt, family, rotation };
   }
 
   async consumeRefreshToken(
@@ -89,41 +89,71 @@ export class TokenService {
     }
 
     const tokenHash = this.hashToken(rawToken);
-    const stored = await this.prisma.refreshToken.findUnique({ where: { tokenHash } });
 
-    if (!stored) {
-      this.logger.warn(
-        `Refresh token not found in store; possible theft for family=${payload.family}`,
-      );
-      await this.revokeFamily(payload.family);
-      throw new UnauthorizedException('Refresh token reuse detected');
-    }
+    const result = await this.prisma.$transaction(async (tx) => {
+      const claim = await tx.refreshToken.updateMany({
+        where: {
+          tokenHash,
+          revokedAt: null,
+          expiresAt: { gt: new Date() },
+        },
+        data: { revokedAt: new Date() },
+      });
 
-    if (stored.revokedAt !== null) {
-      this.logger.warn(
-        `Revoked refresh token reuse for family=${payload.family}; revoking entire family`,
-      );
-      await this.revokeFamily(stored.family);
-      throw new UnauthorizedException('Refresh token reuse detected');
-    }
+      if (claim.count === 0) {
+        const existing = await tx.refreshToken.findUnique({ where: { tokenHash } });
 
-    if (stored.expiresAt.getTime() < Date.now()) {
-      throw new UnauthorizedException('Refresh token expired');
-    }
+        if (!existing) {
+          this.logger.warn({ event: 'refresh_unknown', family: payload.family });
+          await tx.refreshToken.updateMany({
+            where: { family: payload.family, revokedAt: null },
+            data: { revokedAt: new Date() },
+          });
+          throw new UnauthorizedException('Refresh token reuse detected');
+        }
 
-    const reissued = await this.rotate(stored, options);
-    return { userId: stored.userId, reissued };
+        if (existing.revokedAt !== null) {
+          this.logger.warn({ event: 'refresh_replay', family: existing.family });
+          await tx.refreshToken.updateMany({
+            where: { family: existing.family, revokedAt: null },
+            data: { revokedAt: new Date() },
+          });
+          throw new UnauthorizedException('Refresh token reuse detected');
+        }
+
+        throw new UnauthorizedException('Refresh token expired');
+      }
+
+      const previous = await tx.refreshToken.findUnique({ where: { tokenHash } });
+      if (!previous) {
+        throw new UnauthorizedException('Refresh token disappeared mid-rotation');
+      }
+
+      const reissued = await this.issueRefreshTokenInTx(tx, {
+        userId: previous.userId,
+        family: previous.family,
+        rotation: previous.rotation + 1,
+        userAgent: options.userAgent,
+        ipAddress: options.ipAddress,
+      });
+
+      await tx.refreshToken.update({
+        where: { id: previous.id },
+        data: { replacedBy: reissued.jti },
+      });
+
+      return { userId: previous.userId, reissued };
+    });
+
+    return result;
   }
 
   async revokeRefreshToken(rawToken: string): Promise<void> {
     const tokenHash = this.hashToken(rawToken);
-    const stored = await this.prisma.refreshToken.findUnique({ where: { tokenHash } });
-    if (stored?.revokedAt === null) {
-      await this.prisma.refreshToken.update({
-        where: { id: stored.id },
-        data: { revokedAt: new Date() },
-      });
-    }
+    await this.prisma.refreshToken.updateMany({
+      where: { tokenHash, revokedAt: null },
+      data: { revokedAt: new Date() },
+    });
   }
 
   async revokeAllForUser(userId: string): Promise<void> {
@@ -133,31 +163,38 @@ export class TokenService {
     });
   }
 
-  private async rotate(
-    previous: RefreshToken,
-    options: { userAgent?: string; ipAddress?: string },
+  private async issueRefreshTokenInTx(
+    tx: Parameters<Parameters<PrismaService['$transaction']>[0]>[0],
+    options: IssueRefreshOptions,
   ): Promise<IssuedRefresh> {
-    const next = await this.issueRefreshToken({
-      userId: previous.userId,
-      family: previous.family,
-      rotation: previous.rotation + 1,
-      userAgent: options.userAgent,
-      ipAddress: options.ipAddress,
+    const family = options.family ?? randomUUID();
+    const rotation = options.rotation ?? 0;
+    const jti = randomUUID();
+
+    const rawToken = await this.jwt.signRefreshToken({
+      sub: options.userId,
+      jti,
+      family,
+      rotation,
     });
 
-    await this.prisma.refreshToken.update({
-      where: { id: previous.id },
-      data: { revokedAt: new Date(), replacedBy: this.extractJtiFromHash(next.rawToken) },
+    const ttlMs = this.parseDurationMs(this.env.jwtRefreshTtl);
+    const expiresAt = new Date(Date.now() + ttlMs);
+
+    await tx.refreshToken.create({
+      data: {
+        id: jti,
+        userId: options.userId,
+        tokenHash: this.hashToken(rawToken),
+        family,
+        rotation,
+        expiresAt,
+        userAgent: options.userAgent,
+        ipAddress: options.ipAddress,
+      },
     });
 
-    return next;
-  }
-
-  private async revokeFamily(family: string): Promise<void> {
-    await this.prisma.refreshToken.updateMany({
-      where: { family, revokedAt: null },
-      data: { revokedAt: new Date() },
-    });
+    return { jti, rawToken, expiresAt, family, rotation };
   }
 
   private hashToken(token: string): string {
@@ -176,20 +213,5 @@ export class TokenService {
       throw new Error(`Unknown duration unit: ${unit}`);
     }
     return amount * multiplier;
-  }
-
-  private extractJtiFromHash(rawToken: string): string {
-    const segments = rawToken.split('.');
-    if (segments.length !== 3 || segments[1] === undefined) {
-      return '';
-    }
-    try {
-      const payload = JSON.parse(Buffer.from(segments[1], 'base64url').toString()) as {
-        jti?: string;
-      };
-      return payload.jti ?? '';
-    } catch {
-      return '';
-    }
   }
 }

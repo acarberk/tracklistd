@@ -3,6 +3,8 @@ import { JwtService as NestJwtService } from '@nestjs/jwt';
 
 import { EnvService } from '../config/env.service';
 
+const ALG = 'HS256' as const;
+
 export interface AccessTokenPayload {
   sub: string;
   email: string;
@@ -26,6 +28,7 @@ export class JwtService {
   signAccessToken(payload: AccessTokenPayload): Promise<string> {
     return this.nest.signAsync(payload, {
       secret: this.env.jwtAccessSecret,
+      algorithm: ALG,
       expiresIn: this.env.jwtAccessTtl as `${number}${'ms' | 's' | 'm' | 'h' | 'd'}`,
     });
   }
@@ -33,6 +36,7 @@ export class JwtService {
   signRefreshToken(payload: RefreshTokenPayload): Promise<string> {
     return this.nest.signAsync(payload, {
       secret: this.env.jwtRefreshSecret,
+      algorithm: ALG,
       expiresIn: this.env.jwtRefreshTtl as `${number}${'ms' | 's' | 'm' | 'h' | 'd'}`,
     });
   }
@@ -40,12 +44,14 @@ export class JwtService {
   verifyAccessToken(token: string): Promise<AccessTokenPayload> {
     return this.nest.verifyAsync<AccessTokenPayload>(token, {
       secret: this.env.jwtAccessSecret,
+      algorithms: [ALG],
     });
   }
 
   verifyRefreshToken(token: string): Promise<RefreshTokenPayload> {
     return this.nest.verifyAsync<RefreshTokenPayload>(token, {
       secret: this.env.jwtRefreshSecret,
+      algorithms: [ALG],
     });
   }
 }
