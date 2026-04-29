@@ -23,6 +23,26 @@ export class EnvService {
     return this.configService.get('REDIS_URL', { infer: true });
   }
 
+  get jwtAccessSecret(): Env['JWT_ACCESS_SECRET'] {
+    return this.configService.get('JWT_ACCESS_SECRET', { infer: true });
+  }
+
+  get jwtRefreshSecret(): Env['JWT_REFRESH_SECRET'] {
+    return this.configService.get('JWT_REFRESH_SECRET', { infer: true });
+  }
+
+  get jwtAccessTtl(): Env['JWT_ACCESS_TTL'] {
+    return this.configService.get('JWT_ACCESS_TTL', { infer: true });
+  }
+
+  get jwtRefreshTtl(): Env['JWT_REFRESH_TTL'] {
+    return this.configService.get('JWT_REFRESH_TTL', { infer: true });
+  }
+
+  get cookieDomain(): Env['COOKIE_DOMAIN'] {
+    return this.configService.get('COOKIE_DOMAIN', { infer: true });
+  }
+
   get isProduction(): boolean {
     return this.nodeEnv === 'production';
   }

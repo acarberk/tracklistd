@@ -1,5 +1,6 @@
 import 'reflect-metadata';
 
+import fastifyCookie from '@fastify/cookie';
 import { NestFactory } from '@nestjs/core';
 import { FastifyAdapter, type NestFastifyApplication } from '@nestjs/platform-fastify';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
@@ -17,6 +18,8 @@ async function bootstrap(): Promise<void> {
 
   app.useLogger(app.get(Logger));
   app.enableShutdownHooks();
+
+  await app.register(fastifyCookie);
 
   const envService = app.get(EnvService);
 
