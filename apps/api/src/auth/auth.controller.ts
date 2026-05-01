@@ -1,10 +1,12 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Get,
   HttpCode,
   HttpStatus,
   Post,
+  Query,
   Req,
   Res,
   UnauthorizedException,
@@ -15,16 +17,20 @@ import {
   ApiBearerAuth,
   ApiBody,
   ApiCreatedResponse,
+  ApiNoContentResponse,
   ApiOkResponse,
   ApiOperation,
+  ApiQuery,
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import {
   loginInputSchema,
   registerInputSchema,
+  resendVerificationInputSchema,
   type LoginInput,
   type RegisterInput,
+  type ResendVerificationInput,
 } from '@tracklistd/shared';
 
 import { EnvService } from '../config/env.service';
@@ -38,6 +44,8 @@ import {
   RegisterDto,
   RegisterResponseDto,
 } from './dto';
+import { ResendVerificationDto, VerifyEmailResponseDto } from './email-verification.dto';
+import { EmailVerificationService } from './email-verification.service';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { type AuthenticatedRequest } from './types';
 import { ZodValidationPipe } from './zod-validation.pipe';
@@ -53,6 +61,7 @@ export class AuthController {
   constructor(
     private readonly auth: AuthService,
     private readonly env: EnvService,
+    private readonly emailVerification: EmailVerificationService,
   ) {}
 
   @Post('register')
@@ -122,6 +131,33 @@ export class AuthController {
   @ApiUnauthorizedResponse({ description: 'Missing or invalid bearer token' })
   me(@Req() req: AuthenticatedRequest): Promise<PublicUserDto> {
     return this.auth.me(req.user.sub);
+  }
+
+  @Get('verify-email')
+  @ApiOperation({ summary: 'Verify the email address using the token from the link' })
+  @ApiQuery({ name: 'token', required: true, type: String })
+  @ApiOkResponse({ type: VerifyEmailResponseDto })
+  async verifyEmail(@Query('token') token: string): Promise<VerifyEmailResponseDto> {
+    if (!token) {
+      throw new BadRequestException({
+        code: 'AUTH_INVALID_VERIFICATION_TOKEN',
+        message: 'Token is required',
+      });
+    }
+    await this.emailVerification.verifyByToken(token);
+    return { verified: true };
+  }
+
+  @Post('resend-verification')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @UsePipes(new ZodValidationPipe(resendVerificationInputSchema))
+  @ApiOperation({
+    summary: 'Resend the verification email if the address belongs to an unverified user',
+  })
+  @ApiBody({ type: ResendVerificationDto })
+  @ApiNoContentResponse({ description: 'Always returns 204 to prevent enumeration' })
+  async resendVerification(@Body() body: ResendVerificationInput): Promise<void> {
+    await this.emailVerification.resendForEmail(body.email);
   }
 
   private requestContext(req: FastifyRequest): { userAgent?: string; ipAddress?: string } {

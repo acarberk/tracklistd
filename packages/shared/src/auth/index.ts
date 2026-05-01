@@ -17,3 +17,5 @@ export {
   type RegisterInput,
   type RegisterOutput,
 } from './register';
+
+export { resendVerificationInputSchema, type ResendVerificationInput } from './verify';

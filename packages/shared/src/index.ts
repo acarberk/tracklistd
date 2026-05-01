@@ -8,6 +8,7 @@ export {
   publicUserSchema,
   registerInputSchema,
   registerOutputSchema,
+  resendVerificationInputSchema,
   usernameSchema,
   type AuthErrorCode,
   type LoginInput,
@@ -15,4 +16,5 @@ export {
   type PublicUser,
   type RegisterInput,
   type RegisterOutput,
+  type ResendVerificationInput,
 } from './auth';
