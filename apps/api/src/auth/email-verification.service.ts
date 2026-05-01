@@ -1,4 +1,4 @@
-import { createHash, randomBytes, randomUUID } from 'crypto';
+import { createHash, randomBytes } from 'crypto';
 
 import { BadRequestException, Inject, Injectable, Logger } from '@nestjs/common';
 
@@ -43,8 +43,8 @@ export class EmailVerificationService {
     });
   }
 
-  async verifyByToken(rawToken: string): Promise<{ userId: string; alreadyVerified: boolean }> {
-    if (!rawToken || rawToken.length < 16) {
+  async verifyByToken(rawToken: string): Promise<{ userId: string }> {
+    if (rawToken.length < 16) {
       throw new BadRequestException({
         code: 'AUTH_INVALID_VERIFICATION_TOKEN',
         message: 'Invalid verification token',
@@ -53,44 +53,51 @@ export class EmailVerificationService {
 
     const tokenHash = this.hashToken(rawToken);
 
-    const result = await this.prisma.$transaction(async (tx) => {
-      const stored = await tx.emailVerificationToken.findUnique({ where: { tokenHash } });
+    return this.prisma.$transaction(async (tx) => {
+      const claim = await tx.emailVerificationToken.updateMany({
+        where: {
+          tokenHash,
+          usedAt: null,
+          expiresAt: { gt: new Date() },
+        },
+        data: { usedAt: new Date() },
+      });
 
-      if (!stored) {
-        throw new BadRequestException({
-          code: 'AUTH_INVALID_VERIFICATION_TOKEN',
-          message: 'Invalid verification token',
-        });
-      }
-
-      if (stored.usedAt !== null) {
-        throw new BadRequestException({
-          code: 'AUTH_VERIFICATION_TOKEN_USED',
-          message: 'Verification link has already been used',
-        });
-      }
-
-      if (stored.expiresAt.getTime() < Date.now()) {
+      if (claim.count === 0) {
+        const existing = await tx.emailVerificationToken.findUnique({ where: { tokenHash } });
+        if (!existing) {
+          throw new BadRequestException({
+            code: 'AUTH_INVALID_VERIFICATION_TOKEN',
+            message: 'Invalid verification token',
+          });
+        }
+        if (existing.usedAt !== null) {
+          throw new BadRequestException({
+            code: 'AUTH_VERIFICATION_TOKEN_USED',
+            message: 'Verification link has already been used',
+          });
+        }
         throw new BadRequestException({
           code: 'AUTH_VERIFICATION_TOKEN_EXPIRED',
           message: 'Verification link has expired',
         });
       }
 
-      await tx.emailVerificationToken.update({
-        where: { id: stored.id },
-        data: { usedAt: new Date() },
-      });
+      const claimed = await tx.emailVerificationToken.findUnique({ where: { tokenHash } });
+      if (!claimed) {
+        throw new BadRequestException({
+          code: 'AUTH_INVALID_VERIFICATION_TOKEN',
+          message: 'Invalid verification token',
+        });
+      }
 
       const user = await tx.user.update({
-        where: { id: stored.userId },
+        where: { id: claimed.userId },
         data: { emailVerified: true },
       });
 
-      return { userId: user.id, alreadyVerified: false };
+      return { userId: user.id };
     });
-
-    return result;
   }
 
   async resendForEmail(email: string): Promise<void> {
@@ -100,9 +107,17 @@ export class EmailVerificationService {
         event: 'verification_resend_skipped',
         reason: !user ? 'user_not_found' : 'already_verified',
       });
+      await this.padNoOpDelay();
       return;
     }
     await this.issueAndSend(user.id, user.email, user.displayName);
+  }
+
+  private padNoOpDelay(): Promise<void> {
+    const jitterMs = 150 + Math.floor(Math.random() * 250);
+    return new Promise((resolve) => {
+      setTimeout(resolve, jitterMs);
+    });
   }
 
   private async issueToken(userId: string): Promise<IssuedVerificationToken> {
@@ -111,14 +126,15 @@ export class EmailVerificationService {
     const ttlMs = this.parseDurationMs(this.env.emailVerificationTtl);
     const expiresAt = new Date(Date.now() + ttlMs);
 
-    await this.prisma.emailVerificationToken.create({
-      data: {
-        id: randomUUID(),
-        userId,
-        tokenHash,
-        expiresAt,
-      },
-    });
+    await this.prisma.$transaction([
+      this.prisma.emailVerificationToken.updateMany({
+        where: { userId, usedAt: null },
+        data: { usedAt: new Date() },
+      }),
+      this.prisma.emailVerificationToken.create({
+        data: { userId, tokenHash, expiresAt },
+      }),
+    ]);
 
     return { rawToken, expiresAt };
   }

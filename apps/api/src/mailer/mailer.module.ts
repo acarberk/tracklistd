@@ -21,7 +21,7 @@ const mailerProvider: Provider = {
 @Global()
 @Module({
   imports: [ConfigModule],
-  providers: [mailerProvider, ConsoleMailer, ResendMailer],
+  providers: [mailerProvider],
   exports: [mailerProvider],
 })
 export class MailerModule {}

@@ -137,8 +137,8 @@ export class AuthController {
   @ApiOperation({ summary: 'Verify the email address using the token from the link' })
   @ApiQuery({ name: 'token', required: true, type: String })
   @ApiOkResponse({ type: VerifyEmailResponseDto })
-  async verifyEmail(@Query('token') token: string): Promise<VerifyEmailResponseDto> {
-    if (!token) {
+  async verifyEmail(@Query('token') token: unknown): Promise<VerifyEmailResponseDto> {
+    if (typeof token !== 'string' || token.length === 0) {
       throw new BadRequestException({
         code: 'AUTH_INVALID_VERIFICATION_TOKEN',
         message: 'Token is required',
