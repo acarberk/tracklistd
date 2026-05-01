@@ -1,8 +1,9 @@
-import { ConflictException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { ConflictException, Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { type LoginInput, type PublicUser, type RegisterInput } from '@tracklistd/shared';
 
 import { UserService } from '../user/user.service';
 
+import { EmailVerificationService } from './email-verification.service';
 import { JwtService } from './jwt.service';
 import { PasswordService } from './password.service';
 import { TokenService } from './token.service';
@@ -25,24 +26,32 @@ export interface AuthSession {
 
 @Injectable()
 export class AuthService {
+  private readonly logger = new Logger(AuthService.name);
+
   constructor(
     private readonly users: UserService,
     private readonly passwords: PasswordService,
     private readonly jwt: JwtService,
     private readonly tokens: TokenService,
+    private readonly emailVerification: EmailVerificationService,
   ) {}
 
   async register(input: RegisterInput): Promise<{ userId: string; email: string }> {
     const existingByEmail = await this.users.findByEmail(input.email);
-    if (existingByEmail) {
-      throw new ConflictException({ code: 'AUTH_EMAIL_TAKEN', message: 'Email already in use' });
-    }
-
     const existingByUsername = await this.users.findByUsername(input.username);
-    if (existingByUsername) {
+
+    if (existingByEmail || existingByUsername) {
+      await this.passwords.hash(input.password);
+
+      this.logger.log({
+        event: 'register_conflict',
+        emailTaken: Boolean(existingByEmail),
+        usernameTaken: Boolean(existingByUsername),
+      });
+
       throw new ConflictException({
-        code: 'AUTH_USERNAME_TAKEN',
-        message: 'Username already in use',
+        code: 'AUTH_REGISTRATION_FAILED',
+        message: 'Could not complete registration',
       });
     }
 
@@ -53,6 +62,12 @@ export class AuthService {
       displayName: input.displayName,
       passwordHash,
     });
+
+    try {
+      await this.emailVerification.issueAndSend(user.id, user.email, user.displayName);
+    } catch (error) {
+      this.logger.error({ event: 'verification_email_send_failed', userId: user.id, error });
+    }
 
     return { userId: user.id, email: user.email };
   }

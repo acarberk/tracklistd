@@ -43,6 +43,26 @@ export class EnvService {
     return this.configService.get('COOKIE_DOMAIN', { infer: true });
   }
 
+  get mailerDriver(): Env['MAILER_DRIVER'] {
+    return this.configService.get('MAILER_DRIVER', { infer: true });
+  }
+
+  get mailerFrom(): Env['MAILER_FROM'] {
+    return this.configService.get('MAILER_FROM', { infer: true });
+  }
+
+  get resendApiKey(): Env['RESEND_API_KEY'] {
+    return this.configService.get('RESEND_API_KEY', { infer: true });
+  }
+
+  get emailVerificationTtl(): Env['EMAIL_VERIFICATION_TTL'] {
+    return this.configService.get('EMAIL_VERIFICATION_TTL', { infer: true });
+  }
+
+  get appBaseUrl(): Env['APP_BASE_URL'] {
+    return this.configService.get('APP_BASE_URL', { infer: true });
+  }
+
   get isProduction(): boolean {
     return this.nodeEnv === 'production';
   }

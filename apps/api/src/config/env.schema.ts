@@ -19,6 +19,16 @@ export const envSchema = z.object({
     .regex(durationPattern, 'JWT_REFRESH_TTL must look like 7d')
     .default('7d'),
   COOKIE_DOMAIN: z.string().optional(),
+
+  MAILER_DRIVER: z.enum(['console', 'resend']).default('console'),
+  MAILER_FROM: z.string().default('Tracklistd <onboarding@resend.dev>'),
+  RESEND_API_KEY: z.string().optional(),
+
+  EMAIL_VERIFICATION_TTL: z
+    .string()
+    .regex(durationPattern, 'EMAIL_VERIFICATION_TTL must look like 24h')
+    .default('24h'),
+  APP_BASE_URL: z.url().default('http://localhost:3000'),
 });
 
 export type Env = z.infer<typeof envSchema>;
