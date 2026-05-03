@@ -51,12 +51,14 @@ import {
 } from './dto';
 import { ResendVerificationDto, VerifyEmailResponseDto } from './email-verification.dto';
 import { EmailVerificationService } from './email-verification.service';
+import { GoogleAuthGuard } from './google-auth.guard';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { ForgotPasswordDto, ResetPasswordDto } from './password-reset.dto';
 import { PasswordResetService } from './password-reset.service';
 import { type AuthenticatedRequest } from './types';
 import { ZodValidationPipe } from './zod-validation.pipe';
 
+import type { User } from '@prisma/client';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 
 const REFRESH_COOKIE = 'refresh_token';
@@ -194,6 +196,31 @@ export class AuthController {
   @ApiNoContentResponse({ description: 'Password reset successful' })
   async resetPassword(@Body() body: ResetPasswordInput): Promise<void> {
     await this.passwordReset.resetPassword(body.token, body.password);
+  }
+
+  @Get('google')
+  @UseGuards(GoogleAuthGuard)
+  @ApiOperation({ summary: 'Start the Google OAuth flow' })
+  startGoogle(): { redirecting: true } {
+    return { redirecting: true };
+  }
+
+  @Get('google/callback')
+  @UseGuards(GoogleAuthGuard)
+  @ApiOperation({ summary: 'Handle the Google OAuth callback and complete sign-in' })
+  async googleCallback(
+    @Req() req: FastifyRequest & { user: User },
+    @Res({ passthrough: false }) res: FastifyReply,
+  ): Promise<void> {
+    const user = req.user;
+    const session = await this.auth.completeOAuthSignIn(user, this.requestContext(req));
+    this.setRefreshCookie(res, session.tokens.refreshToken, session.tokens.refreshExpiresAt);
+
+    const redirect = new URL(this.env.appBaseUrl);
+    redirect.pathname = '/auth/callback';
+    redirect.hash = `accessToken=${encodeURIComponent(session.tokens.accessToken)}`;
+
+    void res.redirect(redirect.toString(), HttpStatus.FOUND);
   }
 
   private requestContext(req: FastifyRequest): { userAgent?: string; ipAddress?: string } {

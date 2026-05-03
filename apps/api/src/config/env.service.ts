@@ -67,6 +67,22 @@ export class EnvService {
     return this.configService.get('APP_BASE_URL', { infer: true });
   }
 
+  get googleClientId(): Env['GOOGLE_CLIENT_ID'] {
+    return this.configService.get('GOOGLE_CLIENT_ID', { infer: true });
+  }
+
+  get googleClientSecret(): Env['GOOGLE_CLIENT_SECRET'] {
+    return this.configService.get('GOOGLE_CLIENT_SECRET', { infer: true });
+  }
+
+  get googleCallbackUrl(): Env['GOOGLE_CALLBACK_URL'] {
+    return this.configService.get('GOOGLE_CALLBACK_URL', { infer: true });
+  }
+
+  get isGoogleOAuthConfigured(): boolean {
+    return Boolean(this.googleClientId) && Boolean(this.googleClientSecret);
+  }
+
   get isProduction(): boolean {
     return this.nodeEnv === 'production';
   }
