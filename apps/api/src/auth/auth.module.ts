@@ -10,6 +10,7 @@ import { EmailVerificationService } from './email-verification.service';
 import { EmailVerifiedGuard } from './email-verified.guard';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { JwtService } from './jwt.service';
+import { PasswordResetService } from './password-reset.service';
 import { PasswordService } from './password.service';
 import { TokenService } from './token.service';
 
@@ -22,6 +23,7 @@ import { TokenService } from './token.service';
     TokenService,
     PasswordService,
     EmailVerificationService,
+    PasswordResetService,
     JwtAuthGuard,
     EmailVerifiedGuard,
   ],

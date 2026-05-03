@@ -59,6 +59,10 @@ export class EnvService {
     return this.configService.get('EMAIL_VERIFICATION_TTL', { infer: true });
   }
 
+  get passwordResetTtl(): Env['PASSWORD_RESET_TTL'] {
+    return this.configService.get('PASSWORD_RESET_TTL', { infer: true });
+  }
+
   get appBaseUrl(): Env['APP_BASE_URL'] {
     return this.configService.get('APP_BASE_URL', { infer: true });
   }

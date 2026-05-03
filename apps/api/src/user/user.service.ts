@@ -3,6 +3,11 @@ import { type User } from '@prisma/client';
 
 import { PrismaService } from '../prisma/prisma.service';
 
+export interface SoftDeleteResult {
+  userId: string;
+  refreshTokensRevoked: number;
+}
+
 export interface CreateWithPasswordInput {
   email: string;
   username: string;
@@ -84,6 +89,32 @@ export class UserService {
     return this.prisma.user.update({
       where: { id: userId },
       data: { passwordHash },
+    });
+  }
+
+  async softDelete(userId: string): Promise<SoftDeleteResult> {
+    return this.prisma.$transaction(async (tx) => {
+      await tx.user.update({
+        where: { id: userId },
+        data: { deletedAt: new Date() },
+      });
+
+      const refreshRevoke = await tx.refreshToken.updateMany({
+        where: { userId, revokedAt: null },
+        data: { revokedAt: new Date() },
+      });
+
+      await tx.emailVerificationToken.updateMany({
+        where: { userId, usedAt: null },
+        data: { usedAt: new Date() },
+      });
+
+      await tx.passwordResetToken.updateMany({
+        where: { userId, usedAt: null },
+        data: { usedAt: new Date() },
+      });
+
+      return { userId, refreshTokensRevoked: refreshRevoke.count };
     });
   }
 }

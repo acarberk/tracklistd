@@ -28,6 +28,10 @@ export const envSchema = z.object({
     .string()
     .regex(durationPattern, 'EMAIL_VERIFICATION_TTL must look like 24h')
     .default('24h'),
+  PASSWORD_RESET_TTL: z
+    .string()
+    .regex(durationPattern, 'PASSWORD_RESET_TTL must look like 1h')
+    .default('1h'),
   APP_BASE_URL: z.url().default('http://localhost:3000'),
 });
 
