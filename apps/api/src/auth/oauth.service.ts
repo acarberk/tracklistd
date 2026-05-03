@@ -1,5 +1,5 @@
 import { ConflictException, Injectable, Logger } from '@nestjs/common';
-import { type User } from '@prisma/client';
+import { Prisma, type User } from '@prisma/client';
 
 import { UserService } from '../user/user.service';
 import { generateUniqueUsername } from '../user/username-generator';
@@ -36,9 +36,18 @@ export class OAuthService {
           message: 'This email is already linked to a different Google account',
         });
       }
-      return this.users.linkGoogleId(byEmail.id, input.googleId);
+      return this.users.linkGoogleId(byEmail.id, input.googleId, {
+        markEmailVerified: input.emailVerified,
+      });
     }
 
+    return this.createNewFromGoogleWithRetry(input);
+  }
+
+  private async createNewFromGoogleWithRetry(
+    input: GoogleProfileInput,
+    attempt = 0,
+  ): Promise<User> {
     const fallback = input.email.split('@')[0] ?? 'user';
     const baseInput = input.displayName.trim().length > 0 ? input.displayName : fallback;
 
@@ -47,12 +56,33 @@ export class OAuthService {
       async (candidate) => (await this.users.findByUsername(candidate)) === null,
     );
 
-    return this.users.createFromOAuth({
-      email: input.email,
-      username,
-      displayName: input.displayName.trim() || username,
-      provider: 'google',
-      providerId: input.googleId,
-    });
+    try {
+      return await this.users.createFromOAuth({
+        email: input.email,
+        username,
+        displayName: input.displayName.trim() || username,
+        provider: 'google',
+        providerId: input.googleId,
+      });
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2002' &&
+        attempt < 2
+      ) {
+        const existing = await this.users.findByGoogleId(input.googleId);
+        if (existing) {
+          return existing;
+        }
+        const byEmail = await this.users.findByEmail(input.email);
+        if (byEmail) {
+          return this.users.linkGoogleId(byEmail.id, input.googleId, {
+            markEmailVerified: input.emailVerified,
+          });
+        }
+        return this.createNewFromGoogleWithRetry(input, attempt + 1);
+      }
+      throw error;
+    }
   }
 }

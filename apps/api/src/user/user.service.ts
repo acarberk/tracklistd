@@ -92,10 +92,14 @@ export class UserService {
     });
   }
 
-  linkGoogleId(userId: string, googleId: string): Promise<User> {
+  linkGoogleId(
+    userId: string,
+    googleId: string,
+    options: { markEmailVerified: boolean },
+  ): Promise<User> {
     return this.prisma.user.update({
       where: { id: userId },
-      data: { googleId, emailVerified: true },
+      data: options.markEmailVerified ? { googleId, emailVerified: true } : { googleId },
     });
   }
 
