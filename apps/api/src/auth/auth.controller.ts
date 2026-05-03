@@ -24,13 +24,18 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
+import { Throttle } from '@nestjs/throttler';
 import {
+  forgotPasswordInputSchema,
   loginInputSchema,
   registerInputSchema,
   resendVerificationInputSchema,
+  resetPasswordInputSchema,
+  type ForgotPasswordInput,
   type LoginInput,
   type RegisterInput,
   type ResendVerificationInput,
+  type ResetPasswordInput,
 } from '@tracklistd/shared';
 
 import { EnvService } from '../config/env.service';
@@ -47,6 +52,8 @@ import {
 import { ResendVerificationDto, VerifyEmailResponseDto } from './email-verification.dto';
 import { EmailVerificationService } from './email-verification.service';
 import { JwtAuthGuard } from './jwt-auth.guard';
+import { ForgotPasswordDto, ResetPasswordDto } from './password-reset.dto';
+import { PasswordResetService } from './password-reset.service';
 import { type AuthenticatedRequest } from './types';
 import { ZodValidationPipe } from './zod-validation.pipe';
 
@@ -62,10 +69,12 @@ export class AuthController {
     private readonly auth: AuthService,
     private readonly env: EnvService,
     private readonly emailVerification: EmailVerificationService,
+    private readonly passwordReset: PasswordResetService,
   ) {}
 
   @Post('register')
   @HttpCode(HttpStatus.CREATED)
+  @Throttle({ default: { limit: 3, ttl: 3_600_000 } })
   @UsePipes(new ZodValidationPipe(registerInputSchema))
   @ApiOperation({ summary: 'Register a new user with email and password' })
   @ApiBody({ type: RegisterDto })
@@ -76,6 +85,7 @@ export class AuthController {
 
   @Post('login')
   @HttpCode(HttpStatus.OK)
+  @Throttle({ default: { limit: 5, ttl: 900_000 } })
   @UsePipes(new ZodValidationPipe(loginInputSchema))
   @ApiOperation({ summary: 'Authenticate with email and password' })
   @ApiBody({ type: LoginDto })
@@ -93,6 +103,7 @@ export class AuthController {
 
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
+  @Throttle({ default: { limit: 30, ttl: 60_000 } })
   @ApiOperation({ summary: 'Rotate the refresh token and return a new access token' })
   @ApiOkResponse({ type: RefreshResponseDto })
   @ApiUnauthorizedResponse({ description: 'Refresh cookie missing, expired, or reused' })
@@ -150,6 +161,7 @@ export class AuthController {
 
   @Post('resend-verification')
   @HttpCode(HttpStatus.NO_CONTENT)
+  @Throttle({ default: { limit: 3, ttl: 3_600_000 } })
   @UsePipes(new ZodValidationPipe(resendVerificationInputSchema))
   @ApiOperation({
     summary: 'Resend the verification email if the address belongs to an unverified user',
@@ -158,6 +170,30 @@ export class AuthController {
   @ApiNoContentResponse({ description: 'Always returns 204 to prevent enumeration' })
   async resendVerification(@Body() body: ResendVerificationInput): Promise<void> {
     await this.emailVerification.resendForEmail(body.email);
+  }
+
+  @Post('forgot-password')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @Throttle({ default: { limit: 3, ttl: 3_600_000 } })
+  @UsePipes(new ZodValidationPipe(forgotPasswordInputSchema))
+  @ApiOperation({ summary: 'Send a password reset email if the address belongs to a user' })
+  @ApiBody({ type: ForgotPasswordDto })
+  @ApiNoContentResponse({ description: 'Always returns 204 to prevent enumeration' })
+  async forgotPassword(@Body() body: ForgotPasswordInput): Promise<void> {
+    await this.passwordReset.forgotPassword(body.email);
+  }
+
+  @Post('reset-password')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @Throttle({ default: { limit: 5, ttl: 3_600_000 } })
+  @UsePipes(new ZodValidationPipe(resetPasswordInputSchema))
+  @ApiOperation({
+    summary: 'Reset the password using the token from the email and revoke sessions',
+  })
+  @ApiBody({ type: ResetPasswordDto })
+  @ApiNoContentResponse({ description: 'Password reset successful' })
+  async resetPassword(@Body() body: ResetPasswordInput): Promise<void> {
+    await this.passwordReset.resetPassword(body.token, body.password);
   }
 
   private requestContext(req: FastifyRequest): { userAgent?: string; ipAddress?: string } {

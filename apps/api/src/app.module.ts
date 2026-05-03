@@ -6,12 +6,16 @@ import { HealthModule } from './health/health.module';
 import { LoggerModule } from './logger/logger.module';
 import { MailerModule } from './mailer/mailer.module';
 import { PrismaModule } from './prisma/prisma.module';
+import { RedisModule } from './redis/redis.module';
+import { AppThrottlerModule } from './throttler/app-throttler.module';
 import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
     ConfigModule,
     LoggerModule,
+    RedisModule,
+    AppThrottlerModule,
     PrismaModule,
     MailerModule,
     UserModule,

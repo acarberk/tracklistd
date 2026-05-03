@@ -4,16 +4,9 @@ import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 
 import { EnvService } from '../config/env.service';
 import { PrismaService } from '../prisma/prisma.service';
+import { parseDurationMs } from '../shared/duration';
 
 import { JwtService, type RefreshTokenPayload } from './jwt.service';
-
-const MS_BY_UNIT: Record<string, number> = {
-  ms: 1,
-  s: 1000,
-  m: 60 * 1000,
-  h: 60 * 60 * 1000,
-  d: 24 * 60 * 60 * 1000,
-};
 
 interface IssueRefreshOptions {
   userId: string;
@@ -58,7 +51,7 @@ export class TokenService {
       rotation,
     });
 
-    const ttlMs = this.parseDurationMs(this.env.jwtRefreshTtl);
+    const ttlMs = parseDurationMs(this.env.jwtRefreshTtl);
     const expiresAt = new Date(Date.now() + ttlMs);
 
     await this.prisma.refreshToken.create({
@@ -178,7 +171,7 @@ export class TokenService {
       rotation,
     });
 
-    const ttlMs = this.parseDurationMs(this.env.jwtRefreshTtl);
+    const ttlMs = parseDurationMs(this.env.jwtRefreshTtl);
     const expiresAt = new Date(Date.now() + ttlMs);
 
     await tx.refreshToken.create({
@@ -199,19 +192,5 @@ export class TokenService {
 
   private hashToken(token: string): string {
     return createHash('sha256').update(token).digest('hex');
-  }
-
-  private parseDurationMs(value: string): number {
-    const match = /^(\d+)(ms|s|m|h|d)$/.exec(value);
-    if (match?.[1] === undefined || match[2] === undefined) {
-      throw new Error(`Invalid duration: ${value}`);
-    }
-    const amount = Number.parseInt(match[1], 10);
-    const unit = match[2];
-    const multiplier = MS_BY_UNIT[unit];
-    if (multiplier === undefined) {
-      throw new Error(`Unknown duration unit: ${unit}`);
-    }
-    return amount * multiplier;
   }
 }

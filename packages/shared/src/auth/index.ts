@@ -19,3 +19,10 @@ export {
 } from './register';
 
 export { resendVerificationInputSchema, type ResendVerificationInput } from './verify';
+
+export {
+  forgotPasswordInputSchema,
+  resetPasswordInputSchema,
+  type ForgotPasswordInput,
+  type ResetPasswordInput,
+} from './password-reset';
