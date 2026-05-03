@@ -5,15 +5,8 @@ import { BadRequestException, Inject, Injectable, Logger } from '@nestjs/common'
 import { EnvService } from '../config/env.service';
 import { MAILER_TOKEN, type Mailer } from '../mailer/mailer.types';
 import { PrismaService } from '../prisma/prisma.service';
+import { jitterDelay, parseDurationMs } from '../shared/duration';
 import { UserService } from '../user/user.service';
-
-const MS_BY_UNIT: Record<string, number> = {
-  ms: 1,
-  s: 1000,
-  m: 60 * 1000,
-  h: 60 * 60 * 1000,
-  d: 24 * 60 * 60 * 1000,
-};
 
 const TOKEN_BYTES = 32;
 
@@ -107,23 +100,16 @@ export class EmailVerificationService {
         event: 'verification_resend_skipped',
         reason: !user ? 'user_not_found' : 'already_verified',
       });
-      await this.padNoOpDelay();
+      await jitterDelay(150, 250);
       return;
     }
     await this.issueAndSend(user.id, user.email, user.displayName);
   }
 
-  private padNoOpDelay(): Promise<void> {
-    const jitterMs = 150 + Math.floor(Math.random() * 250);
-    return new Promise((resolve) => {
-      setTimeout(resolve, jitterMs);
-    });
-  }
-
   private async issueToken(userId: string): Promise<IssuedVerificationToken> {
     const rawToken = randomBytes(TOKEN_BYTES).toString('base64url');
     const tokenHash = this.hashToken(rawToken);
-    const ttlMs = this.parseDurationMs(this.env.emailVerificationTtl);
+    const ttlMs = parseDurationMs(this.env.emailVerificationTtl);
     const expiresAt = new Date(Date.now() + ttlMs);
 
     await this.prisma.$transaction([
@@ -141,20 +127,6 @@ export class EmailVerificationService {
 
   private hashToken(rawToken: string): string {
     return createHash('sha256').update(rawToken).digest('hex');
-  }
-
-  private parseDurationMs(value: string): number {
-    const match = /^(\d+)(ms|s|m|h|d)$/.exec(value);
-    if (match?.[1] === undefined || match[2] === undefined) {
-      throw new Error(`Invalid duration: ${value}`);
-    }
-    const amount = Number.parseInt(match[1], 10);
-    const unit = match[2];
-    const multiplier = MS_BY_UNIT[unit];
-    if (multiplier === undefined) {
-      throw new Error(`Unknown duration unit: ${unit}`);
-    }
-    return amount * multiplier;
   }
 
   private buildVerificationUrl(token: string): string {

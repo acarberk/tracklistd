@@ -94,10 +94,14 @@ export class UserService {
 
   async softDelete(userId: string): Promise<SoftDeleteResult> {
     return this.prisma.$transaction(async (tx) => {
-      await tx.user.update({
-        where: { id: userId },
+      const claim = await tx.user.updateMany({
+        where: { id: userId, deletedAt: null },
         data: { deletedAt: new Date() },
       });
+
+      if (claim.count === 0) {
+        return { userId, refreshTokensRevoked: 0 };
+      }
 
       const refreshRevoke = await tx.refreshToken.updateMany({
         where: { userId, revokedAt: null },

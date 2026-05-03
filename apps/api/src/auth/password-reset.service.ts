@@ -5,19 +5,12 @@ import { BadRequestException, Inject, Injectable, Logger } from '@nestjs/common'
 import { EnvService } from '../config/env.service';
 import { MAILER_TOKEN, type Mailer } from '../mailer/mailer.types';
 import { PrismaService } from '../prisma/prisma.service';
+import { jitterDelay, parseDurationMs } from '../shared/duration';
 import { UserService } from '../user/user.service';
 
 import { PasswordService } from './password.service';
-import { TokenService } from './token.service';
 
 const TOKEN_BYTES = 32;
-const MS_BY_UNIT: Record<string, number> = {
-  ms: 1,
-  s: 1000,
-  m: 60 * 1000,
-  h: 60 * 60 * 1000,
-  d: 24 * 60 * 60 * 1000,
-};
 
 @Injectable()
 export class PasswordResetService {
@@ -27,7 +20,6 @@ export class PasswordResetService {
     private readonly prisma: PrismaService,
     private readonly users: UserService,
     private readonly passwords: PasswordService,
-    private readonly tokens: TokenService,
     private readonly env: EnvService,
     @Inject(MAILER_TOKEN) private readonly mailer: Mailer,
   ) {}
@@ -36,13 +28,23 @@ export class PasswordResetService {
     const user = await this.users.findByEmail(email);
     if (!user) {
       this.logger.log({ event: 'password_reset_skipped', reason: 'user_not_found' });
-      await this.padNoOpDelay();
+      await jitterDelay(150, 250);
+      return;
+    }
+
+    if (!user.passwordHash) {
+      this.logger.log({
+        event: 'password_reset_skipped',
+        reason: 'oauth_only_account',
+        userId: user.id,
+      });
+      await jitterDelay(150, 250);
       return;
     }
 
     const rawToken = randomBytes(TOKEN_BYTES).toString('base64url');
     const tokenHash = this.hashToken(rawToken);
-    const ttlMs = this.parseDurationMs(this.env.passwordResetTtl);
+    const ttlMs = parseDurationMs(this.env.passwordResetTtl);
     const expiresAt = new Date(Date.now() + ttlMs);
 
     await this.prisma.$transaction([
@@ -84,8 +86,9 @@ export class PasswordResetService {
     }
 
     const tokenHash = this.hashToken(rawToken);
+    const passwordHash = await this.passwords.hash(newPassword);
 
-    const userId = await this.prisma.$transaction(async (tx) => {
+    await this.prisma.$transaction(async (tx) => {
       const claim = await tx.passwordResetToken.updateMany({
         where: {
           tokenHash,
@@ -123,12 +126,16 @@ export class PasswordResetService {
         });
       }
 
-      return claimed.userId;
-    });
+      await tx.user.update({
+        where: { id: claimed.userId },
+        data: { passwordHash },
+      });
 
-    const passwordHash = await this.passwords.hash(newPassword);
-    await this.users.updatePasswordHash(userId, passwordHash);
-    await this.tokens.revokeAllForUser(userId);
+      await tx.refreshToken.updateMany({
+        where: { userId: claimed.userId, revokedAt: null },
+        data: { revokedAt: new Date() },
+      });
+    });
   }
 
   private buildResetUrl(token: string): string {
@@ -174,26 +181,5 @@ export class PasswordResetService {
 
   private hashToken(token: string): string {
     return createHash('sha256').update(token).digest('hex');
-  }
-
-  private parseDurationMs(value: string): number {
-    const match = /^(\d+)(ms|s|m|h|d)$/.exec(value);
-    if (match?.[1] === undefined || match[2] === undefined) {
-      throw new Error(`Invalid duration: ${value}`);
-    }
-    const amount = Number.parseInt(match[1], 10);
-    const unit = match[2];
-    const multiplier = MS_BY_UNIT[unit];
-    if (multiplier === undefined) {
-      throw new Error(`Unknown duration unit: ${unit}`);
-    }
-    return amount * multiplier;
-  }
-
-  private padNoOpDelay(): Promise<void> {
-    const jitterMs = 150 + Math.floor(Math.random() * 250);
-    return new Promise((resolve) => {
-      setTimeout(resolve, jitterMs);
-    });
   }
 }

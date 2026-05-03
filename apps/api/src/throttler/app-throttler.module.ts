@@ -1,9 +1,11 @@
 import { ThrottlerStorageRedisService } from '@nest-lab/throttler-storage-redis';
 import { Module } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
-import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { ThrottlerModule } from '@nestjs/throttler';
 
 import { REDIS_CLIENT, RedisModule } from '../redis/redis.module';
+
+import { FailClosedThrottlerGuard } from './fail-closed-throttler.guard';
 
 import type Redis from 'ioredis';
 
@@ -27,7 +29,7 @@ import type Redis from 'ioredis';
   providers: [
     {
       provide: APP_GUARD,
-      useClass: ThrottlerGuard,
+      useClass: FailClosedThrottlerGuard,
     },
   ],
 })

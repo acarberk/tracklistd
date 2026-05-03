@@ -6,6 +6,8 @@ import { EnvService } from '../config/env.service';
 
 export const REDIS_CLIENT = Symbol('REDIS_CLIENT');
 
+const QUIT_TIMEOUT_MS = 5_000;
+
 const redisProvider: Provider = {
   provide: REDIS_CLIENT,
   inject: [EnvService],
@@ -27,6 +29,15 @@ export class RedisModule implements OnApplicationShutdown {
   constructor(@Inject(REDIS_CLIENT) private readonly redis: Redis) {}
 
   async onApplicationShutdown(): Promise<void> {
-    await this.redis.quit();
+    const quit = this.redis.quit().then(() => undefined);
+    const timeout = new Promise<void>((resolve) => {
+      setTimeout(resolve, QUIT_TIMEOUT_MS);
+    });
+
+    try {
+      await Promise.race([quit, timeout]);
+    } finally {
+      this.redis.disconnect();
+    }
   }
 }
