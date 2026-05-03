@@ -33,6 +33,10 @@ export const envSchema = z.object({
     .regex(durationPattern, 'PASSWORD_RESET_TTL must look like 1h')
     .default('1h'),
   APP_BASE_URL: z.url().default('http://localhost:3000'),
+
+  GOOGLE_CLIENT_ID: z.string().optional(),
+  GOOGLE_CLIENT_SECRET: z.string().optional(),
+  GOOGLE_CALLBACK_URL: z.url().default('http://localhost:3001/auth/google/callback'),
 });
 
 export type Env = z.infer<typeof envSchema>;

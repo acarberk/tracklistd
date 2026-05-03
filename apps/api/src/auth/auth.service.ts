@@ -1,4 +1,5 @@
 import { ConflictException, Injectable, Logger, UnauthorizedException } from '@nestjs/common';
+import { type User } from '@prisma/client';
 import { type LoginInput, type PublicUser, type RegisterInput } from '@tracklistd/shared';
 
 import { UserService } from '../user/user.service';
@@ -143,6 +144,29 @@ export class AuthService {
 
   async logoutEverywhere(userId: string): Promise<void> {
     await this.tokens.revokeAllForUser(userId);
+  }
+
+  async completeOAuthSignIn(user: User, context: RequestContext): Promise<AuthSession> {
+    const accessToken = await this.jwt.signAccessToken({
+      sub: user.id,
+      email: user.email,
+      emailVerified: user.emailVerified,
+    });
+
+    const refresh = await this.tokens.issueRefreshToken({
+      userId: user.id,
+      userAgent: context.userAgent,
+      ipAddress: context.ipAddress,
+    });
+
+    return {
+      user: this.toPublicUser(user),
+      tokens: {
+        accessToken,
+        refreshToken: refresh.rawToken,
+        refreshExpiresAt: refresh.expiresAt,
+      },
+    };
   }
 
   async me(userId: string): Promise<PublicUser> {

@@ -92,6 +92,13 @@ export class UserService {
     });
   }
 
+  linkGoogleId(userId: string, googleId: string): Promise<User> {
+    return this.prisma.user.update({
+      where: { id: userId },
+      data: { googleId, emailVerified: true },
+    });
+  }
+
   async softDelete(userId: string): Promise<SoftDeleteResult> {
     return this.prisma.$transaction(async (tx) => {
       const claim = await tx.user.updateMany({
