@@ -48,7 +48,7 @@
     "@nestjs/jwt": "^11.0.2",
     "@nestjs/passport": "^11.0.5",
     "@nestjs/platform-fastify": "^11.1.19",
-    "@nestjs/swagger": "^11.4.1",
+    "@nestjs/swagger": "^11.4.2",
     "@nestjs/terminus": "^11.1.1",
     "@nestjs/throttler": "^6.5.0",
     "@prisma/adapter-pg": "^7.8.0",
@@ -66,6 +66,6 @@
     "reflect-metadata": "^0.2.2",
     "resend": "^6.12.2",
     "rxjs": "^7.8.2",
-    "zod": "^4.3.6"
+    "zod": "^4.4.2"
   }
 }
