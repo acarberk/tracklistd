@@ -28,5 +28,58 @@
   },
   "theme": {
     "toggle": "Toggle theme"
+  },
+  "auth": {
+    "common": {
+      "email": "Email",
+      "emailPlaceholder": "you@example.com",
+      "password": "Password",
+      "submitting": "Submitting...",
+      "errors": {
+        "unknown": "Something went wrong. Please try again."
+      }
+    },
+    "login": {
+      "title": "Welcome back",
+      "description": "Sign in to your Tracklistd account.",
+      "submit": "Sign in",
+      "forgotPasswordLink": "Forgot password?",
+      "noAccount": "Don't have an account?",
+      "registerLink": "Create one",
+      "errors": {
+        "invalid": "Invalid email or password."
+      }
+    },
+    "register": {
+      "title": "Create your account",
+      "description": "Start tracking everything you watch and play.",
+      "submit": "Create account",
+      "username": "Username",
+      "usernamePlaceholder": "tracklistd_user",
+      "displayName": "Display name",
+      "displayNamePlaceholder": "Your name",
+      "haveAccount": "Already have an account?",
+      "loginLink": "Sign in",
+      "success": {
+        "title": "Check your inbox",
+        "description": "We sent a verification link to your email. Open it to activate your account.",
+        "goToLogin": "Back to sign in"
+      },
+      "errors": {
+        "emailTaken": "This email is already registered.",
+        "usernameTaken": "This username is already taken."
+      }
+    },
+    "forgotPassword": {
+      "title": "Reset your password",
+      "description": "Enter your email and we'll send a reset link if the account exists.",
+      "submit": "Send reset link",
+      "backToLogin": "Back to sign in",
+      "success": {
+        "title": "Check your inbox",
+        "description": "If the email exists, a password reset link is on its way.",
+        "backToLogin": "Back to sign in"
+      }
+    }
   }
 }
