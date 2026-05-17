@@ -85,4 +85,38 @@ describe('TurnstileGuard', () => {
       response: { code: 'AUTH_CAPTCHA_REQUIRED' },
     });
   });
+
+  it('rejects when body is an array (treated as missing token)', async () => {
+    const { service, verify } = buildService({ enabled: true });
+    const guard = new TurnstileGuard(service);
+    const ctx = buildContext({ body: [1, 2, 3] });
+
+    await expect(guard.canActivate(ctx)).rejects.toMatchObject({
+      response: { code: 'AUTH_CAPTCHA_REQUIRED' },
+    });
+    expect(verify).not.toHaveBeenCalled();
+  });
+
+  it('rejects when body is a primitive string (treated as missing token)', async () => {
+    const { service, verify } = buildService({ enabled: true });
+    const guard = new TurnstileGuard(service);
+    const ctx = buildContext({ body: 'not-an-object' });
+
+    await expect(guard.canActivate(ctx)).rejects.toMatchObject({
+      response: { code: 'AUTH_CAPTCHA_REQUIRED' },
+    });
+    expect(verify).not.toHaveBeenCalled();
+  });
+
+  it('rejects token longer than 2048 chars without calling verify', async () => {
+    const { service, verify } = buildService({ enabled: true });
+    const guard = new TurnstileGuard(service);
+    const oversized = 'a'.repeat(2049);
+    const ctx = buildContext({ body: { turnstileToken: oversized }, ip: '1.2.3.4' });
+
+    await expect(guard.canActivate(ctx)).rejects.toMatchObject({
+      response: { code: 'AUTH_CAPTCHA_FAILED' },
+    });
+    expect(verify).not.toHaveBeenCalled();
+  });
 });

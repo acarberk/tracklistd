@@ -95,11 +95,18 @@ export class UserService {
   linkGoogleId(
     userId: string,
     googleId: string,
-    options: { markEmailVerified: boolean },
+    options: { markEmailVerified: boolean; clearPassword: boolean },
   ): Promise<User> {
+    const data: { googleId: string; emailVerified?: true; passwordHash?: null } = { googleId };
+    if (options.markEmailVerified) {
+      data.emailVerified = true;
+    }
+    if (options.clearPassword) {
+      data.passwordHash = null;
+    }
     return this.prisma.user.update({
       where: { id: userId },
-      data: options.markEmailVerified ? { googleId, emailVerified: true } : { googleId },
+      data,
     });
   }
 

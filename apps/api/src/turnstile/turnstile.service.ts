@@ -7,6 +7,9 @@ interface SiteVerifyResponse {
   'error-codes'?: string[];
 }
 
+const VERIFY_TIMEOUT_MS = 5000;
+const MAX_TOKEN_LENGTH = 2048;
+
 @Injectable()
 export class TurnstileService {
   private readonly logger = new Logger(TurnstileService.name);
@@ -20,6 +23,10 @@ export class TurnstileService {
   async verify(token: string, ipAddress: string | undefined): Promise<boolean> {
     if (!this.env.turnstileSecret) {
       return true;
+    }
+    if (token.length > MAX_TOKEN_LENGTH) {
+      this.logger.warn({ event: 'turnstile_token_too_long', length: token.length });
+      return false;
     }
 
     const body = new URLSearchParams({
@@ -35,6 +42,7 @@ export class TurnstileService {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body,
+        signal: AbortSignal.timeout(VERIFY_TIMEOUT_MS),
       });
 
       if (!response.ok) {

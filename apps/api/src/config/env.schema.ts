@@ -38,7 +38,11 @@ export const envSchema = z.object({
   GOOGLE_CLIENT_SECRET: z.string().optional(),
   GOOGLE_CALLBACK_URL: z.url().default('http://localhost:3001/auth/google/callback'),
 
-  TURNSTILE_SECRET: z.string().optional(),
+  TURNSTILE_SECRET: z
+    .string()
+    .transform((value) => value.trim())
+    .pipe(z.string())
+    .optional(),
   TURNSTILE_VERIFY_URL: z
     .url()
     .default('https://challenges.cloudflare.com/turnstile/v0/siteverify'),

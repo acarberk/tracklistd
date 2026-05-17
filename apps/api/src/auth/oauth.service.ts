@@ -29,19 +29,35 @@ export class OAuthService {
         this.logger.warn({
           event: 'oauth_conflict',
           provider: 'google',
-          email: input.email,
+          userId: byEmail.id,
         });
         throw new ConflictException({
           code: 'INTEGRATION_ALREADY_LINKED',
           message: 'This email is already linked to a different Google account',
         });
       }
+      const clearPassword = this.shouldClearPasswordOnLink(byEmail, input);
+      if (clearPassword) {
+        this.logger.warn({
+          event: 'oauth_link_clears_unverified_password',
+          provider: 'google',
+          userId: byEmail.id,
+        });
+      }
       return this.users.linkGoogleId(byEmail.id, input.googleId, {
         markEmailVerified: input.emailVerified,
+        clearPassword,
       });
     }
 
     return this.createNewFromGoogleWithRetry(input);
+  }
+
+  private shouldClearPasswordOnLink(
+    existing: { passwordHash: string | null; emailVerified: boolean },
+    input: GoogleProfileInput,
+  ): boolean {
+    return input.emailVerified && !existing.emailVerified && existing.passwordHash !== null;
   }
 
   private async createNewFromGoogleWithRetry(
@@ -76,8 +92,17 @@ export class OAuthService {
         }
         const byEmail = await this.users.findByEmail(input.email);
         if (byEmail) {
+          const clearPassword = this.shouldClearPasswordOnLink(byEmail, input);
+          if (clearPassword) {
+            this.logger.warn({
+              event: 'oauth_link_clears_unverified_password',
+              provider: 'google',
+              userId: byEmail.id,
+            });
+          }
           return this.users.linkGoogleId(byEmail.id, input.googleId, {
             markEmailVerified: input.emailVerified,
+            clearPassword,
           });
         }
         return this.createNewFromGoogleWithRetry(input, attempt + 1);
