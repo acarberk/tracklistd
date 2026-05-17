@@ -9,7 +9,11 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { EmailVerificationService } from './email-verification.service';
 import { EmailVerifiedGuard } from './email-verified.guard';
-import { GoogleCallbackGuard, GoogleStartGuard } from './google-auth.guard';
+import {
+  GoogleCallbackGuard,
+  GoogleOAuthConfiguredGuard,
+  GoogleStartGuard,
+} from './google-auth.guard';
 import { GoogleStrategy } from './google.strategy';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { JwtService } from './jwt.service';
@@ -34,6 +38,7 @@ import { TokenService } from './token.service';
     EmailVerifiedGuard,
     GoogleStartGuard,
     GoogleCallbackGuard,
+    GoogleOAuthConfiguredGuard,
   ],
   exports: [PasswordService, JwtService, JwtAuthGuard, EmailVerifiedGuard],
 })
