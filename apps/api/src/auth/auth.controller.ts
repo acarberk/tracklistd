@@ -52,7 +52,11 @@ import {
 } from './dto';
 import { ResendVerificationDto, VerifyEmailResponseDto } from './email-verification.dto';
 import { EmailVerificationService } from './email-verification.service';
-import { GoogleCallbackGuard, GoogleStartGuard } from './google-auth.guard';
+import {
+  GoogleCallbackGuard,
+  GoogleOAuthConfiguredGuard,
+  GoogleStartGuard,
+} from './google-auth.guard';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { ForgotPasswordDto, ResetPasswordDto } from './password-reset.dto';
 import { PasswordResetService } from './password-reset.service';
@@ -90,6 +94,7 @@ export class AuthController {
   @Post('login')
   @HttpCode(HttpStatus.OK)
   @Throttle({ default: { limit: 5, ttl: 900_000 } })
+  @UseGuards(TurnstileGuard)
   @UsePipes(new ZodValidationPipe(loginInputSchema))
   @ApiOperation({ summary: 'Authenticate with email and password' })
   @ApiBody({ type: LoginDto })
@@ -203,14 +208,14 @@ export class AuthController {
   }
 
   @Get('google')
-  @UseGuards(GoogleStartGuard)
+  @UseGuards(GoogleOAuthConfiguredGuard, GoogleStartGuard)
   @ApiOperation({ summary: 'Start the Google OAuth flow' })
   startGoogle(): { redirecting: boolean } {
     return { redirecting: true };
   }
 
   @Get('google/callback')
-  @UseGuards(GoogleCallbackGuard)
+  @UseGuards(GoogleOAuthConfiguredGuard, GoogleCallbackGuard)
   @ApiOperation({ summary: 'Handle the Google OAuth callback and complete sign-in' })
   async googleCallback(
     @Req() req: FastifyRequest & { user?: User },

@@ -12,15 +12,9 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     env: EnvService,
     private readonly oauth: OAuthService,
   ) {
-    if (!env.googleClientId || !env.googleClientSecret) {
-      throw new InternalServerErrorException(
-        'Google OAuth is not configured (set GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET)',
-      );
-    }
-
     super({
-      clientID: env.googleClientId,
-      clientSecret: env.googleClientSecret,
+      clientID: env.googleClientId ?? 'unconfigured',
+      clientSecret: env.googleClientSecret ?? 'unconfigured',
       callbackURL: env.googleCallbackUrl,
       scope: ['openid', 'email', 'profile'],
     });
