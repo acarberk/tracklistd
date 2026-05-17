@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input';
 
 export default function HomePage(): ReactNode {
   return (
-    <main className="container mx-auto flex min-h-screen max-w-2xl flex-col items-center justify-center gap-8 px-4">
+    <main className="container mx-auto flex max-w-2xl flex-col items-center justify-center gap-8 px-4 py-16">
       <div className="flex flex-col items-center gap-2 text-center">
         <Sparkles className="h-10 w-10 text-primary" />
         <h1 className="text-4xl font-bold tracking-tight">Tracklistd</h1>
