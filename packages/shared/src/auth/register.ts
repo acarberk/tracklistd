@@ -7,7 +7,7 @@ export const registerInputSchema = z.object({
   password: passwordSchema,
   username: usernameSchema,
   displayName: displayNameSchema,
-  turnstileToken: z.string().min(1, 'CAPTCHA token is required').optional(),
+  turnstileToken: z.string().min(1, 'CAPTCHA token is required').max(2048).optional(),
 });
 
 export type RegisterInput = z.infer<typeof registerInputSchema>;

@@ -5,7 +5,7 @@ import { emailSchema, passwordSchema } from './common';
 export const loginInputSchema = z.object({
   email: emailSchema,
   password: passwordSchema,
-  turnstileToken: z.string().min(1).optional(),
+  turnstileToken: z.string().min(1).max(2048).optional(),
 });
 
 export type LoginInput = z.infer<typeof loginInputSchema>;

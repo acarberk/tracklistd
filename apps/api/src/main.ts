@@ -12,9 +12,11 @@ import { EnvService } from './config/env.service';
 const SWAGGER_PATH = 'api/docs';
 
 async function bootstrap(): Promise<void> {
-  const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter(), {
-    bufferLogs: true,
-  });
+  const app = await NestFactory.create<NestFastifyApplication>(
+    AppModule,
+    new FastifyAdapter({ trustProxy: true }),
+    { bufferLogs: true },
+  );
 
   app.useLogger(app.get(Logger));
   app.enableShutdownHooks();

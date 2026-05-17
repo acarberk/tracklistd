@@ -8,6 +8,7 @@ import { MailerModule } from './mailer/mailer.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { RedisModule } from './redis/redis.module';
 import { AppThrottlerModule } from './throttler/app-throttler.module';
+import { TurnstileModule } from './turnstile/turnstile.module';
 import { UserModule } from './user/user.module';
 
 @Module({
@@ -16,6 +17,7 @@ import { UserModule } from './user/user.module';
     LoggerModule,
     RedisModule,
     AppThrottlerModule,
+    TurnstileModule,
     PrismaModule,
     MailerModule,
     UserModule,

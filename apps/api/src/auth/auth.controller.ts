@@ -39,6 +39,7 @@ import {
 } from '@tracklistd/shared';
 
 import { EnvService } from '../config/env.service';
+import { TurnstileGuard } from '../turnstile/turnstile.guard';
 
 import { AuthService } from './auth.service';
 import {
@@ -51,7 +52,7 @@ import {
 } from './dto';
 import { ResendVerificationDto, VerifyEmailResponseDto } from './email-verification.dto';
 import { EmailVerificationService } from './email-verification.service';
-import { GoogleAuthGuard } from './google-auth.guard';
+import { GoogleCallbackGuard, GoogleStartGuard } from './google-auth.guard';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { ForgotPasswordDto, ResetPasswordDto } from './password-reset.dto';
 import { PasswordResetService } from './password-reset.service';
@@ -77,6 +78,7 @@ export class AuthController {
   @Post('register')
   @HttpCode(HttpStatus.CREATED)
   @Throttle({ default: { limit: 3, ttl: 3_600_000 } })
+  @UseGuards(TurnstileGuard)
   @UsePipes(new ZodValidationPipe(registerInputSchema))
   @ApiOperation({ summary: 'Register a new user with email and password' })
   @ApiBody({ type: RegisterDto })
@@ -164,6 +166,7 @@ export class AuthController {
   @Post('resend-verification')
   @HttpCode(HttpStatus.NO_CONTENT)
   @Throttle({ default: { limit: 3, ttl: 3_600_000 } })
+  @UseGuards(TurnstileGuard)
   @UsePipes(new ZodValidationPipe(resendVerificationInputSchema))
   @ApiOperation({
     summary: 'Resend the verification email if the address belongs to an unverified user',
@@ -177,6 +180,7 @@ export class AuthController {
   @Post('forgot-password')
   @HttpCode(HttpStatus.NO_CONTENT)
   @Throttle({ default: { limit: 3, ttl: 3_600_000 } })
+  @UseGuards(TurnstileGuard)
   @UsePipes(new ZodValidationPipe(forgotPasswordInputSchema))
   @ApiOperation({ summary: 'Send a password reset email if the address belongs to a user' })
   @ApiBody({ type: ForgotPasswordDto })
@@ -199,20 +203,27 @@ export class AuthController {
   }
 
   @Get('google')
-  @UseGuards(GoogleAuthGuard)
+  @UseGuards(GoogleStartGuard)
   @ApiOperation({ summary: 'Start the Google OAuth flow' })
-  startGoogle(): { redirecting: true } {
+  startGoogle(): { redirecting: boolean } {
     return { redirecting: true };
   }
 
   @Get('google/callback')
-  @UseGuards(GoogleAuthGuard)
+  @UseGuards(GoogleCallbackGuard)
   @ApiOperation({ summary: 'Handle the Google OAuth callback and complete sign-in' })
   async googleCallback(
-    @Req() req: FastifyRequest & { user: User },
+    @Req() req: FastifyRequest & { user?: User },
     @Res({ passthrough: false }) res: FastifyReply,
   ): Promise<void> {
     const user = req.user;
+    if (!user) {
+      throw new UnauthorizedException({
+        code: 'AUTH_OAUTH_FAILED',
+        message: 'OAuth sign-in failed',
+      });
+    }
+
     const session = await this.auth.completeOAuthSignIn(user, this.requestContext(req));
     this.setRefreshCookie(res, session.tokens.refreshToken, session.tokens.refreshExpiresAt);
 
