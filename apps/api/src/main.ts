@@ -1,6 +1,7 @@
 import 'reflect-metadata';
 
 import fastifyCookie from '@fastify/cookie';
+import fastifyHelmet from '@fastify/helmet';
 import { NestFactory } from '@nestjs/core';
 import { FastifyAdapter, type NestFastifyApplication } from '@nestjs/platform-fastify';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
@@ -21,9 +22,19 @@ async function bootstrap(): Promise<void> {
   app.useLogger(app.get(Logger));
   app.enableShutdownHooks();
 
+  const envService = app.get(EnvService);
+
+  await app.register(fastifyHelmet, {
+    contentSecurityPolicy: envService.isProduction ? undefined : false,
+    crossOriginEmbedderPolicy: envService.isProduction,
+  });
   await app.register(fastifyCookie);
 
-  const envService = app.get(EnvService);
+  app.enableCors({
+    origin: envService.appBaseUrl,
+    credentials: true,
+    methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS'],
+  });
 
   if (!envService.isProduction) {
     const config = new DocumentBuilder()

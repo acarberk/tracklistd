@@ -1,6 +1,12 @@
 import { randomBytes } from 'crypto';
 
-import { type ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  type CanActivate,
+  type ExecutionContext,
+  Injectable,
+  ServiceUnavailableException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
 import { EnvService } from '../config/env.service';
@@ -10,6 +16,21 @@ import type { FastifyReply, FastifyRequest } from 'fastify';
 const STATE_COOKIE = 'oauth_state';
 const STATE_PATH = '/auth/google';
 const STATE_MAX_AGE_SECONDS = 300;
+
+@Injectable()
+export class GoogleOAuthConfiguredGuard implements CanActivate {
+  constructor(private readonly env: EnvService) {}
+
+  canActivate(): boolean {
+    if (!this.env.isGoogleOAuthConfigured) {
+      throw new ServiceUnavailableException({
+        code: 'AUTH_OAUTH_NOT_CONFIGURED',
+        message: 'Google OAuth is not configured on this server',
+      });
+    }
+    return true;
+  }
+}
 
 function buildStateCookie(value: string, maxAgeSeconds: number, isProduction: boolean): string {
   const parts = [
