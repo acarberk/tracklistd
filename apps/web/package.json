@@ -3,17 +3,29 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Next.js 15 frontend",
+  "description": "Next.js 16 frontend",
   "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "next build",
+    "start": "next start",
     "lint": "eslint .",
     "type-check": "tsc --noEmit",
-    "build": "echo 'build placeholder'",
-    "test": "echo 'no tests yet'"
+    "test": "echo 'no tests yet'",
+    "clean": "rm -rf .next .turbo"
+  },
+  "dependencies": {
+    "@tracklistd/shared": "workspace:*",
+    "next": "^16.2.6",
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6"
   },
   "devDependencies": {
     "@tracklistd/config": "workspace:*",
+    "@types/node": "^25.8.0",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
     "eslint": "^9.24.0",
-    "eslint-config-next": "^15.5.18",
+    "eslint-config-next": "^16.2.6",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^5.2.0",
     "typescript": "^6.0.3"
