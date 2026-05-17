@@ -1,0 +1,32 @@
+{
+  "site": {
+    "name": "Tracklistd",
+    "tagline": "Track games, films, shows, and anime — all in one place."
+  },
+  "nav": {
+    "home": "Home",
+    "discover": "Discover",
+    "library": "Library",
+    "signIn": "Sign in"
+  },
+  "home": {
+    "smokeTest": {
+      "title": "UI components smoke test",
+      "description": "shadcn/ui + Tailwind v4 + CSS variables wired up.",
+      "inputPlaceholder": "Type something...",
+      "buttons": {
+        "default": "Default",
+        "secondary": "Secondary",
+        "outline": "Outline",
+        "ghost": "Ghost",
+        "destructive": "Destructive"
+      }
+    }
+  },
+  "footer": {
+    "copyright": "© {year} Tracklistd"
+  },
+  "theme": {
+    "toggle": "Toggle theme"
+  }
+}
