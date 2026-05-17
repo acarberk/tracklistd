@@ -1,0 +1,32 @@
+{
+  "site": {
+    "name": "Tracklistd",
+    "tagline": "Oyun, film, dizi ve anime — hepsi tek yerde."
+  },
+  "nav": {
+    "home": "Ana sayfa",
+    "discover": "Keşfet",
+    "library": "Kütüphane",
+    "signIn": "Giriş yap"
+  },
+  "home": {
+    "smokeTest": {
+      "title": "UI bileşenleri smoke testi",
+      "description": "shadcn/ui + Tailwind v4 + CSS değişkenleri çalışıyor.",
+      "inputPlaceholder": "Bir şeyler yazın...",
+      "buttons": {
+        "default": "Varsayılan",
+        "secondary": "İkincil",
+        "outline": "Dış çizgi",
+        "ghost": "Hayalet",
+        "destructive": "Yıkıcı"
+      }
+    }
+  },
+  "footer": {
+    "copyright": "© {year} Tracklistd"
+  },
+  "theme": {
+    "toggle": "Tema değiştir"
+  }
+}
