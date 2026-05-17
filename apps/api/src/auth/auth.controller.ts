@@ -39,6 +39,7 @@ import {
 } from '@tracklistd/shared';
 
 import { EnvService } from '../config/env.service';
+import { TurnstileGuard } from '../turnstile/turnstile.guard';
 
 import { AuthService } from './auth.service';
 import {
@@ -77,6 +78,7 @@ export class AuthController {
   @Post('register')
   @HttpCode(HttpStatus.CREATED)
   @Throttle({ default: { limit: 3, ttl: 3_600_000 } })
+  @UseGuards(TurnstileGuard)
   @UsePipes(new ZodValidationPipe(registerInputSchema))
   @ApiOperation({ summary: 'Register a new user with email and password' })
   @ApiBody({ type: RegisterDto })
@@ -164,6 +166,7 @@ export class AuthController {
   @Post('resend-verification')
   @HttpCode(HttpStatus.NO_CONTENT)
   @Throttle({ default: { limit: 3, ttl: 3_600_000 } })
+  @UseGuards(TurnstileGuard)
   @UsePipes(new ZodValidationPipe(resendVerificationInputSchema))
   @ApiOperation({
     summary: 'Resend the verification email if the address belongs to an unverified user',
@@ -177,6 +180,7 @@ export class AuthController {
   @Post('forgot-password')
   @HttpCode(HttpStatus.NO_CONTENT)
   @Throttle({ default: { limit: 3, ttl: 3_600_000 } })
+  @UseGuards(TurnstileGuard)
   @UsePipes(new ZodValidationPipe(forgotPasswordInputSchema))
   @ApiOperation({ summary: 'Send a password reset email if the address belongs to a user' })
   @ApiBody({ type: ForgotPasswordDto })

@@ -83,6 +83,18 @@ export class EnvService {
     return Boolean(this.googleClientId) && Boolean(this.googleClientSecret);
   }
 
+  get turnstileSecret(): Env['TURNSTILE_SECRET'] {
+    return this.configService.get('TURNSTILE_SECRET', { infer: true });
+  }
+
+  get turnstileVerifyUrl(): Env['TURNSTILE_VERIFY_URL'] {
+    return this.configService.get('TURNSTILE_VERIFY_URL', { infer: true });
+  }
+
+  get isTurnstileEnabled(): boolean {
+    return Boolean(this.turnstileSecret);
+  }
+
   get isProduction(): boolean {
     return this.nodeEnv === 'production';
   }

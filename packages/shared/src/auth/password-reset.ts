@@ -4,6 +4,7 @@ import { emailSchema, passwordSchema } from './common';
 
 export const forgotPasswordInputSchema = z.object({
   email: emailSchema,
+  turnstileToken: z.string().min(1).optional(),
 });
 
 export type ForgotPasswordInput = z.infer<typeof forgotPasswordInputSchema>;
