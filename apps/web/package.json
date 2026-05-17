@@ -13,7 +13,7 @@
   "devDependencies": {
     "@tracklistd/config": "workspace:*",
     "eslint": "^9.24.0",
-    "eslint-config-next": "^15.3.0",
+    "eslint-config-next": "^15.5.18",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^5.2.0",
     "typescript": "^6.0.3"
