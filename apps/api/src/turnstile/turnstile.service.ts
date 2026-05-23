@@ -7,6 +7,7 @@ interface SiteVerifyResponse {
   'error-codes'?: string[];
 }
 
+const TURNSTILE_VERIFY_URL = 'https://challenges.cloudflare.com/turnstile/v0/siteverify';
 const VERIFY_TIMEOUT_MS = 5000;
 const MAX_TOKEN_LENGTH = 2048;
 
@@ -38,7 +39,7 @@ export class TurnstileService {
     }
 
     try {
-      const response = await fetch(this.env.turnstileVerifyUrl, {
+      const response = await fetch(TURNSTILE_VERIFY_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body,
