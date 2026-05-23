@@ -41,6 +41,24 @@
     "addToLibrary": "Add to library",
     "summary": "About"
   },
+  "profile": {
+    "edit": "Edit",
+    "editTitle": "Edit profile",
+    "displayName": "Display name",
+    "bio": "Bio",
+    "bioPlaceholder": "Tell people a little about yourself",
+    "country": "Country",
+    "avatarUrl": "Avatar URL",
+    "email": "Email",
+    "memberSince": "Member since",
+    "save": "Save changes",
+    "cancel": "Cancel",
+    "signInRequired": {
+      "title": "Sign in to view your profile",
+      "description": "Your collection, friends, and stats live here.",
+      "cta": "Sign in"
+    }
+  },
   "library": {
     "title": "Your library",
     "empty": "No games in this section yet.",

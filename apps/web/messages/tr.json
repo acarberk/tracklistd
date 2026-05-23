@@ -41,6 +41,24 @@
     "addToLibrary": "Kütüphaneye ekle",
     "summary": "Hakkında"
   },
+  "profile": {
+    "edit": "Düzenle",
+    "editTitle": "Profili düzenle",
+    "displayName": "Görünen ad",
+    "bio": "Hakkında",
+    "bioPlaceholder": "Kendin hakkında biraz bilgi ver",
+    "country": "Ülke",
+    "avatarUrl": "Avatar URL",
+    "email": "E-posta",
+    "memberSince": "Üyelik tarihi",
+    "save": "Kaydet",
+    "cancel": "İptal",
+    "signInRequired": {
+      "title": "Profilini görmek için giriş yap",
+      "description": "Koleksiyonun, arkadaşların ve istatistiklerin burada.",
+      "cta": "Giriş yap"
+    }
+  },
   "library": {
     "title": "Kütüphanen",
     "empty": "Bu kategoride henüz oyun yok.",

@@ -1,4 +1,8 @@
-import { type PublicUser } from '@tracklistd/shared';
+import {
+  type PublicUser,
+  type UpdateProfileInput,
+  type UserProfileOutput,
+} from '@tracklistd/shared';
 import axios from 'axios';
 
 import { apiClient } from '../api-client';
@@ -37,4 +41,14 @@ export async function logout(): Promise<void> {
   } catch {
     // ignore; we clear local state anyway
   }
+}
+
+export async function getProfile(): Promise<UserProfileOutput> {
+  const response = await apiClient.get<UserProfileOutput>('/users/me');
+  return response.data;
+}
+
+export async function updateProfile(input: UpdateProfileInput): Promise<UserProfileOutput> {
+  const response = await apiClient.patch<UserProfileOutput>('/users/me', input);
+  return response.data;
 }
