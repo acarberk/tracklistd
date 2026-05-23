@@ -157,6 +157,28 @@
         "backToLogin": "Back to sign in"
       }
     },
+    "verifyEmail": {
+      "loading": {
+        "title": "Verifying your email...",
+        "description": "Just a moment."
+      },
+      "success": {
+        "title": "Email verified",
+        "description": "Your account is now active.",
+        "goToLogin": "Sign in"
+      },
+      "errors": {
+        "title": "We could not verify your email",
+        "expired": "This verification link has expired. Request a new one from your account settings.",
+        "invalid": "This verification link is invalid or has already been used.",
+        "unknown": "Something went wrong. Try opening the link again."
+      },
+      "missingToken": {
+        "title": "Verification link is missing",
+        "description": "The verification link is incomplete. Open the link from your email."
+      },
+      "backToLogin": "Back to sign in"
+    },
     "resetPassword": {
       "title": "Set a new password",
       "description": "Choose a new password for your account.",
