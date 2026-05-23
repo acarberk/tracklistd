@@ -28,6 +28,7 @@ model User {
   refreshTokens        RefreshToken[]
   emailTokens          EmailVerificationToken[]
   passwordResetTokens  PasswordResetToken[]
+  games                UserGame[]
 
   @@index([email])
   @@index([username])
@@ -119,4 +120,65 @@ model PasswordResetToken {
   @@index([userId])
   @@index([expiresAt])
   @@map("password_reset_tokens")
+}
+
+enum GameStatus {
+  WANT_TO_PLAY
+  PLAYING
+  COMPLETED
+  DROPPED
+  ON_HOLD
+
+  @@map("game_status")
+}
+
+model Game {
+  id              String    @id @default(uuid()) @db.Uuid
+  igdbId          Int       @unique @map("igdb_id")
+  slug            String    @unique
+  title           String
+  summary         String?   @db.Text
+  coverUrl        String?   @map("cover_url")
+  releaseDate     DateTime? @map("release_date")
+  platforms       String[]
+  genres          String[]
+  igdbRating      Float?    @map("igdb_rating")
+  igdbRatingCount Int?      @map("igdb_rating_count")
+
+  steamAppId Int? @unique @map("steam_app_id")
+
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+  lastSyncedAt DateTime @default(now()) @map("last_synced_at")
+
+  userGames UserGame[]
+
+  @@index([title])
+  @@index([releaseDate])
+  @@map("games")
+}
+
+model UserGame {
+  id     String @id @default(uuid()) @db.Uuid
+  userId String @map("user_id") @db.Uuid
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  gameId String @map("game_id") @db.Uuid
+  game   Game   @relation(fields: [gameId], references: [id], onDelete: Cascade)
+
+  status GameStatus @default(WANT_TO_PLAY)
+  rating Int?       @db.SmallInt
+  review String?    @db.Text
+
+  startedAt   DateTime? @map("started_at")
+  completedAt DateTime? @map("completed_at")
+  hoursPlayed Int?      @map("hours_played")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@unique([userId, gameId])
+  @@index([userId])
+  @@index([gameId])
+  @@index([userId, status])
+  @@map("user_games")
 }
