@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from './config/config.module';
+import { GamesModule } from './games/games.module';
 import { HealthModule } from './health/health.module';
 import { IgdbModule } from './igdb/igdb.module';
 import { LoggerModule } from './logger/logger.module';
@@ -24,6 +25,7 @@ import { UserModule } from './user/user.module';
     UserModule,
     AuthModule,
     IgdbModule,
+    GamesModule,
     HealthModule,
   ],
 })

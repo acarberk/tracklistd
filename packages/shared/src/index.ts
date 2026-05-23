@@ -24,10 +24,23 @@ export {
 } from './auth';
 
 export {
+  GAME_STATUSES,
+  addUserGameInputSchema,
   gameSearchInputSchema,
   gameSearchOutputSchema,
   gameSearchResultSchema,
+  gameStatusSchema,
+  listUserGamesOutputSchema,
+  listUserGamesQuerySchema,
+  updateUserGameInputSchema,
+  userGameSchema,
+  type AddUserGameInput,
   type GameSearchInput,
   type GameSearchOutput,
   type GameSearchResult,
+  type GameStatus,
+  type ListUserGamesOutput,
+  type ListUserGamesQuery,
+  type UpdateUserGameInput,
+  type UserGameOutput,
 } from './game';
