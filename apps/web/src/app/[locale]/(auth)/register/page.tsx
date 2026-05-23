@@ -12,14 +12,15 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Link } from '@/i18n/navigation';
+import { Link, useRouter } from '@/i18n/navigation';
 import { apiClient, extractApiError } from '@/lib/api-client';
+import { useAuthStore } from '@/stores/auth-store';
 
 export default function RegisterPage(): ReactNode {
   const t = useTranslations('auth.register');
   const tCommon = useTranslations('auth.common');
+  const router = useRouter();
   const [apiError, setApiError] = useState<string | null>(null);
-  const [registered, setRegistered] = useState(false);
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
 
   const form = useForm({
@@ -37,9 +38,10 @@ export default function RegisterPage(): ReactNode {
       const response = await apiClient.post<RegisterOutput>('/auth/register', data);
       return response.data;
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       setApiError(null);
-      setRegistered(true);
+      useAuthStore.getState().setSession(data.accessToken, data.user);
+      router.push('/');
     },
     onError: (error) => {
       const apiErr = extractApiError(error);
@@ -52,25 +54,6 @@ export default function RegisterPage(): ReactNode {
       }
     },
   });
-
-  if (registered) {
-    return (
-      <Card className="w-full">
-        <CardHeader>
-          <CardTitle>{t('success.title')}</CardTitle>
-          <CardDescription>{t('success.description')}</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Link
-            href="/login"
-            className="text-sm text-foreground underline-offset-4 hover:underline"
-          >
-            {t('success.goToLogin')}
-          </Link>
-        </CardContent>
-      </Card>
-    );
-  }
 
   return (
     <Card className="w-full">

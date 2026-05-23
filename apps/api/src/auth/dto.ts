@@ -49,11 +49,11 @@ export class PublicUserDto {
 }
 
 export class RegisterResponseDto {
-  @ApiProperty({ format: 'uuid' })
-  userId!: string;
+  @ApiProperty({ description: 'Short-lived access token (15 minutes)' })
+  accessToken!: string;
 
-  @ApiProperty({ example: 'berk@example.com' })
-  email!: string;
+  @ApiProperty({ type: PublicUserDto })
+  user!: PublicUserDto;
 }
 
 export class LoginResponseDto {
