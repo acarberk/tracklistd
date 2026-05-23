@@ -1,12 +1,16 @@
-import { Gamepad2 } from 'lucide-react';
-import { useTranslations } from 'next-intl';
+'use client';
 
-import type { ReactNode } from 'react';
+import { Gamepad2, LogOut } from 'lucide-react';
+import { useTranslations } from 'next-intl';
+import { type ReactNode } from 'react';
 
 import { ThemeToggle } from '@/components/theme-toggle';
-import { buttonVariants } from '@/components/ui/button';
-import { Link } from '@/i18n/navigation';
+import { Button, buttonVariants } from '@/components/ui/button';
+import { useUser } from '@/hooks/use-user';
+import { Link, useRouter } from '@/i18n/navigation';
+import { logout as logoutCall } from '@/lib/api/auth';
 import { cn } from '@/lib/utils';
+import { useAuthStore } from '@/stores/auth-store';
 
 const NAV_ITEMS = [
   { href: '/', key: 'home' },
@@ -17,6 +21,15 @@ const NAV_ITEMS = [
 export function SiteHeader(): ReactNode {
   const t = useTranslations('nav');
   const tSite = useTranslations('site');
+  const tAuth = useTranslations('auth.session');
+  const { user, isAuthenticated } = useUser();
+  const router = useRouter();
+
+  async function handleLogout(): Promise<void> {
+    await logoutCall();
+    useAuthStore.getState().clearSession();
+    router.push('/login');
+  }
 
   return (
     <header className="sticky top-0 z-40 w-full border-b border-border bg-background/80 backdrop-blur-sm">
@@ -40,9 +53,25 @@ export function SiteHeader(): ReactNode {
         </div>
         <div className="flex items-center gap-2">
           <ThemeToggle />
-          <Link href="/login" className={cn(buttonVariants({ size: 'sm' }))}>
-            {t('signIn')}
-          </Link>
+          {isAuthenticated && user ? (
+            <div className="flex items-center gap-2">
+              <span className="hidden text-sm sm:inline">{user.displayName}</span>
+              <Button
+                variant="ghost"
+                size="icon"
+                aria-label={tAuth('signOut')}
+                onClick={() => {
+                  void handleLogout();
+                }}
+              >
+                <LogOut className="h-4 w-4" />
+              </Button>
+            </div>
+          ) : (
+            <Link href="/login" className={cn(buttonVariants({ size: 'sm' }))}>
+              {t('signIn')}
+            </Link>
+          )}
         </div>
       </div>
     </header>

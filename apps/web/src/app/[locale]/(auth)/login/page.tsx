@@ -13,6 +13,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Link, useRouter } from '@/i18n/navigation';
 import { apiClient, extractApiError } from '@/lib/api-client';
+import { useAuthStore } from '@/stores/auth-store';
 
 export default function LoginPage(): ReactNode {
   const t = useTranslations('auth.login');
@@ -30,8 +31,9 @@ export default function LoginPage(): ReactNode {
       const response = await apiClient.post<LoginOutput>('/auth/login', data);
       return response.data;
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       setApiError(null);
+      useAuthStore.getState().setSession(data.accessToken, data.user);
       router.push('/');
     },
     onError: (error) => {
