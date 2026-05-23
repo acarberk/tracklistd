@@ -55,7 +55,15 @@ export function SiteHeader(): ReactNode {
           <ThemeToggle />
           {isAuthenticated && user ? (
             <div className="flex items-center gap-2">
-              <span className="hidden text-sm sm:inline">{user.displayName}</span>
+              <Link
+                href="/profile"
+                className={cn(
+                  buttonVariants({ variant: 'ghost', size: 'sm' }),
+                  'hidden sm:inline-flex',
+                )}
+              >
+                {user.displayName}
+              </Link>
               <Button
                 variant="ghost"
                 size="icon"
