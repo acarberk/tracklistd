@@ -4,6 +4,7 @@ import { Gamepad2, LogOut } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { type ReactNode } from 'react';
 
+import { LocaleSwitcher } from '@/components/locale-switcher';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { useUser } from '@/hooks/use-user';
@@ -52,6 +53,7 @@ export function SiteHeader(): ReactNode {
           </nav>
         </div>
         <div className="flex items-center gap-2">
+          <LocaleSwitcher />
           <ThemeToggle />
           {isAuthenticated && user ? (
             <div className="flex items-center gap-2">
