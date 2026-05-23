@@ -1,7 +1,7 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 
 import { EnvService } from '../config/env.service';
-import { REDIS_CLIENT } from '../redis/redis.module';
+import { REDIS_CLIENT } from '../redis/redis.constants';
 
 import type Redis from 'ioredis';
 

@@ -4,7 +4,9 @@ import Redis from 'ioredis';
 import { ConfigModule } from '../config/config.module';
 import { EnvService } from '../config/env.service';
 
-export const REDIS_CLIENT = Symbol('REDIS_CLIENT');
+import { REDIS_CLIENT } from './redis.constants';
+
+export { REDIS_CLIENT } from './redis.constants';
 
 const QUIT_TIMEOUT_MS = 5_000;
 
