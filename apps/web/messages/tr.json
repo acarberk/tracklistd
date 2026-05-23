@@ -157,6 +157,28 @@
         "backToLogin": "Girişe dön"
       }
     },
+    "verifyEmail": {
+      "loading": {
+        "title": "E-postan doğrulanıyor...",
+        "description": "Bir saniye."
+      },
+      "success": {
+        "title": "E-posta doğrulandı",
+        "description": "Hesabın artık aktif.",
+        "goToLogin": "Giriş yap"
+      },
+      "errors": {
+        "title": "E-postanı doğrulayamadık",
+        "expired": "Bu doğrulama linkinin süresi dolmuş. Hesap ayarlarından yenisini talep et.",
+        "invalid": "Bu doğrulama linki geçersiz veya zaten kullanılmış.",
+        "unknown": "Bir şeyler ters gitti. Linki tekrar açmayı dene."
+      },
+      "missingToken": {
+        "title": "Doğrulama linki eksik",
+        "description": "Doğrulama linki tamamlanmamış. E-postandaki linki aç."
+      },
+      "backToLogin": "Girişe dön"
+    },
     "resetPassword": {
       "title": "Yeni şifre belirle",
       "description": "Hesabın için yeni bir şifre seç.",

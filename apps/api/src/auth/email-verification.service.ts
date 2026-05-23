@@ -131,7 +131,7 @@ export class EmailVerificationService {
 
   private buildVerificationUrl(token: string): string {
     const base = this.env.appBaseUrl.replace(/\/+$/, '');
-    return `${base}/auth/verify-email?token=${encodeURIComponent(token)}`;
+    return `${base}/verify-email?token=${encodeURIComponent(token)}`;
   }
 
   private renderHtml(displayName: string, token: string): string {
