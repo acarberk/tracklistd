@@ -22,3 +22,12 @@ export {
   type ResendVerificationInput,
   type ResetPasswordInput,
 } from './auth';
+
+export {
+  gameSearchInputSchema,
+  gameSearchOutputSchema,
+  gameSearchResultSchema,
+  type GameSearchInput,
+  type GameSearchOutput,
+  type GameSearchResult,
+} from './game';

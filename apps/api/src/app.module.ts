@@ -3,6 +3,7 @@ import { Module } from '@nestjs/common';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from './config/config.module';
 import { HealthModule } from './health/health.module';
+import { IgdbModule } from './igdb/igdb.module';
 import { LoggerModule } from './logger/logger.module';
 import { MailerModule } from './mailer/mailer.module';
 import { PrismaModule } from './prisma/prisma.module';
@@ -22,6 +23,7 @@ import { UserModule } from './user/user.module';
     MailerModule,
     UserModule,
     AuthModule,
+    IgdbModule,
     HealthModule,
   ],
 })
