@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 import { displayNameSchema, emailSchema, passwordSchema, usernameSchema } from './common';
+import { publicUserSchema } from './login';
 
 export const registerInputSchema = z.object({
   email: emailSchema,
@@ -13,8 +14,8 @@ export const registerInputSchema = z.object({
 export type RegisterInput = z.infer<typeof registerInputSchema>;
 
 export const registerOutputSchema = z.object({
-  userId: z.uuid(),
-  email: emailSchema,
+  accessToken: z.string(),
+  user: publicUserSchema,
 });
 
 export type RegisterOutput = z.infer<typeof registerOutputSchema>;

@@ -87,8 +87,14 @@ export class AuthController {
   @ApiOperation({ summary: 'Register a new user with email and password' })
   @ApiBody({ type: RegisterDto })
   @ApiCreatedResponse({ type: RegisterResponseDto })
-  register(@Body() body: RegisterInput): Promise<RegisterResponseDto> {
-    return this.auth.register(body);
+  async register(
+    @Body() body: RegisterInput,
+    @Req() req: FastifyRequest,
+    @Res({ passthrough: true }) res: FastifyReply,
+  ): Promise<RegisterResponseDto> {
+    const session = await this.auth.register(body, this.requestContext(req));
+    this.setRefreshCookie(res, session.tokens.refreshToken, session.tokens.refreshExpiresAt);
+    return { accessToken: session.tokens.accessToken, user: session.user };
   }
 
   @Post('login')

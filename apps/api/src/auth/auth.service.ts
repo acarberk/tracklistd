@@ -37,7 +37,7 @@ export class AuthService {
     private readonly emailVerification: EmailVerificationService,
   ) {}
 
-  async register(input: RegisterInput): Promise<{ userId: string; email: string }> {
+  async register(input: RegisterInput, context: RequestContext): Promise<AuthSession> {
     const existingByEmail = await this.users.findByEmail(input.email);
     const existingByUsername = await this.users.findByUsername(input.username);
 
@@ -70,7 +70,26 @@ export class AuthService {
       this.logger.error({ event: 'verification_email_send_failed', userId: user.id, error });
     }
 
-    return { userId: user.id, email: user.email };
+    const accessToken = await this.jwt.signAccessToken({
+      sub: user.id,
+      email: user.email,
+      emailVerified: user.emailVerified,
+    });
+
+    const refresh = await this.tokens.issueRefreshToken({
+      userId: user.id,
+      userAgent: context.userAgent,
+      ipAddress: context.ipAddress,
+    });
+
+    return {
+      user: this.toPublicUser(user),
+      tokens: {
+        accessToken,
+        refreshToken: refresh.rawToken,
+        refreshExpiresAt: refresh.expiresAt,
+      },
+    };
   }
 
   async login(input: LoginInput, context: RequestContext): Promise<AuthSession> {
