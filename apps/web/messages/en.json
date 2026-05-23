@@ -29,6 +29,14 @@
   "theme": {
     "toggle": "Toggle theme"
   },
+  "discover": {
+    "title": "Discover games",
+    "description": "Search the IGDB database for any game you played, are playing, or want to play.",
+    "searchPlaceholder": "Search for games...",
+    "emptyHint": "Start typing a game name to see results.",
+    "noResults": "No results found for \"{query}\".",
+    "error": "Something went wrong while searching. Try again."
+  },
   "auth": {
     "common": {
       "email": "Email",
