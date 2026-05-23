@@ -1,7 +1,9 @@
 export {
+  gameDetailOutputSchema,
   gameSearchInputSchema,
   gameSearchOutputSchema,
   gameSearchResultSchema,
+  type GameDetailOutput,
   type GameSearchInput,
   type GameSearchOutput,
   type GameSearchResult,

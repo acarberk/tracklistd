@@ -37,6 +37,10 @@
     "noResults": "No results found for \"{query}\".",
     "error": "Something went wrong while searching. Try again."
   },
+  "gameDetail": {
+    "addToLibrary": "Add to library",
+    "summary": "About"
+  },
   "auth": {
     "common": {
       "email": "Email",

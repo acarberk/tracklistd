@@ -1,7 +1,7 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { Prisma, type Game } from '@prisma/client';
 
-import { IgdbService } from '../igdb/igdb.service';
+import { type IgdbGame, IgdbService } from '../igdb/igdb.service';
 import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
@@ -15,6 +15,23 @@ export class GameService {
 
   findById(id: string): Promise<Game | null> {
     return this.prisma.game.findUnique({ where: { id } });
+  }
+
+  async findOrFetchBySlug(slug: string): Promise<Game> {
+    const existing = await this.prisma.game.findUnique({ where: { slug } });
+    if (existing) {
+      return existing;
+    }
+
+    const fetched = await this.igdb.findBySlug(slug);
+    if (!fetched) {
+      throw new NotFoundException({
+        code: 'GAME_NOT_FOUND',
+        message: `Game with slug "${slug}" not found`,
+      });
+    }
+
+    return this.persistSnapshot(fetched);
   }
 
   async ensureGameByIgdbId(igdbId: number): Promise<Game> {
@@ -31,6 +48,10 @@ export class GameService {
       });
     }
 
+    return this.persistSnapshot(fetched);
+  }
+
+  private async persistSnapshot(fetched: IgdbGame): Promise<Game> {
     try {
       return await this.prisma.game.create({
         data: {
@@ -48,12 +69,16 @@ export class GameService {
       });
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
-        const racedRow = await this.prisma.game.findUnique({ where: { igdbId } });
+        const racedRow = await this.prisma.game.findUnique({ where: { igdbId: fetched.igdbId } });
         if (racedRow) {
           return racedRow;
         }
       }
-      this.logger.error({ event: 'game_snapshot_create_failed', igdbId, error });
+      this.logger.error({
+        event: 'game_snapshot_create_failed',
+        igdbId: fetched.igdbId,
+        error,
+      });
       throw error;
     }
   }

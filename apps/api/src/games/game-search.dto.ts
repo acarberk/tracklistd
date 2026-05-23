@@ -36,3 +36,38 @@ export class GameSearchResponseDto {
   @ApiProperty({ type: [GameSearchResultDto] })
   results!: GameSearchResultDto[];
 }
+
+export class GameDetailDto {
+  @ApiProperty({ format: 'uuid', description: 'Internal Game row ID' })
+  id!: string;
+
+  @ApiProperty({ example: 19560, description: 'IGDB game ID' })
+  igdbId!: number;
+
+  @ApiProperty({ example: 'the-legend-of-zelda-breath-of-the-wild' })
+  slug!: string;
+
+  @ApiProperty({ example: 'The Legend of Zelda: Breath of the Wild' })
+  title!: string;
+
+  @ApiProperty({ nullable: true })
+  summary!: string | null;
+
+  @ApiProperty({ nullable: true, format: 'uri' })
+  coverUrl!: string | null;
+
+  @ApiProperty({ nullable: true, format: 'date-time' })
+  releaseDate!: string | null;
+
+  @ApiProperty({ type: [String] })
+  platforms!: string[];
+
+  @ApiProperty({ type: [String] })
+  genres!: string[];
+
+  @ApiProperty({ nullable: true, example: 95.5 })
+  igdbRating!: number | null;
+
+  @ApiProperty({ nullable: true, example: 1247 })
+  igdbRatingCount!: number | null;
+}

@@ -26,6 +26,7 @@ export {
 export {
   GAME_STATUSES,
   addUserGameInputSchema,
+  gameDetailOutputSchema,
   gameSearchInputSchema,
   gameSearchOutputSchema,
   gameSearchResultSchema,
@@ -35,6 +36,7 @@ export {
   updateUserGameInputSchema,
   userGameSchema,
   type AddUserGameInput,
+  type GameDetailOutput,
   type GameSearchInput,
   type GameSearchOutput,
   type GameSearchResult,
