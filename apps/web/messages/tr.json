@@ -119,6 +119,26 @@
         "description": "E-posta kayıtlıysa şifre sıfırlama bağlantısı yolda.",
         "backToLogin": "Girişe dön"
       }
+    },
+    "resetPassword": {
+      "title": "Yeni şifre belirle",
+      "description": "Hesabın için yeni bir şifre seç.",
+      "newPasswordLabel": "Yeni şifre",
+      "submit": "Şifreyi güncelle",
+      "missingToken": {
+        "title": "Sıfırlama linki eksik",
+        "description": "Sıfırlama linki geçersiz veya eksik. Yeni bir tane talep et.",
+        "requestNew": "Yeni sıfırlama linki iste"
+      },
+      "success": {
+        "title": "Şifre güncellendi",
+        "description": "Artık yeni şifrenle giriş yapabilirsin.",
+        "goToLogin": "Giriş yap"
+      },
+      "errors": {
+        "invalidToken": "Bu sıfırlama linki geçersiz. Yeni bir tane talep et.",
+        "expiredToken": "Bu sıfırlama linkinin süresi dolmuş. Yeni bir tane talep et."
+      }
     }
   }
 }
