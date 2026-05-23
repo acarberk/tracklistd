@@ -140,7 +140,7 @@ export class PasswordResetService {
 
   private buildResetUrl(token: string): string {
     const base = this.env.appBaseUrl.replace(/\/+$/, '');
-    return `${base}/auth/reset-password?token=${encodeURIComponent(token)}`;
+    return `${base}/reset-password?token=${encodeURIComponent(token)}`;
   }
 
   private renderHtml(displayName: string, url: string): string {

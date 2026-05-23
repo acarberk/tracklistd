@@ -119,6 +119,26 @@
         "description": "If the email exists, a password reset link is on its way.",
         "backToLogin": "Back to sign in"
       }
+    },
+    "resetPassword": {
+      "title": "Set a new password",
+      "description": "Choose a new password for your account.",
+      "newPasswordLabel": "New password",
+      "submit": "Update password",
+      "missingToken": {
+        "title": "Reset link is missing",
+        "description": "The reset link is invalid or incomplete. Request a new one.",
+        "requestNew": "Request a new reset link"
+      },
+      "success": {
+        "title": "Password updated",
+        "description": "You can now sign in with your new password.",
+        "goToLogin": "Sign in"
+      },
+      "errors": {
+        "invalidToken": "This reset link is invalid. Request a new one.",
+        "expiredToken": "This reset link has expired. Request a new one."
+      }
     }
   }
 }
