@@ -42,6 +42,9 @@
     "summary": "About"
   },
   "auth": {
+    "session": {
+      "signOut": "Sign out"
+    },
     "common": {
       "email": "Email",
       "emailPlaceholder": "you@example.com",

@@ -42,6 +42,9 @@
     "summary": "Hakkında"
   },
   "auth": {
+    "session": {
+      "signOut": "Çıkış yap"
+    },
     "common": {
       "email": "E-posta",
       "emailPlaceholder": "siz@ornek.com",

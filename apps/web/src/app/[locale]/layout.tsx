@@ -7,6 +7,7 @@ import { getMessages, setRequestLocale } from 'next-intl/server';
 import type { Metadata, Viewport } from 'next';
 import type { ReactNode } from 'react';
 
+import { AuthBootstrap } from '@/components/auth-bootstrap';
 import { QueryProvider } from '@/components/query-provider';
 import { SiteFooter } from '@/components/site-footer';
 import { SiteHeader } from '@/components/site-header';
@@ -61,9 +62,11 @@ export default async function LocaleLayout({
             disableTransitionOnChange
           >
             <QueryProvider>
-              <SiteHeader />
-              <div className="flex-1">{children}</div>
-              <SiteFooter />
+              <AuthBootstrap>
+                <SiteHeader />
+                <div className="flex-1">{children}</div>
+                <SiteFooter />
+              </AuthBootstrap>
             </QueryProvider>
           </ThemeProvider>
         </NextIntlClientProvider>
