@@ -25,12 +25,42 @@ export interface CreateFromOAuthInput {
   providerId: string;
 }
 
+export interface UpdateProfileInput {
+  displayName?: string;
+  bio?: string | null;
+  country?: string | null;
+  avatarUrl?: string | null;
+}
+
 @Injectable()
 export class UserService {
   constructor(private readonly prisma: PrismaService) {}
 
   findById(id: string): Promise<User | null> {
     return this.prisma.user.findFirst({ where: { id, deletedAt: null } });
+  }
+
+  async updateProfile(userId: string, input: UpdateProfileInput): Promise<User> {
+    const data: Record<string, unknown> = {};
+    if (input.displayName !== undefined) data.displayName = input.displayName;
+    if (input.bio !== undefined) data.bio = input.bio;
+    if (input.country !== undefined) data.country = input.country;
+    if (input.avatarUrl !== undefined) data.avatarUrl = input.avatarUrl;
+
+    if (Object.keys(data).length === 0) {
+      const existing = await this.prisma.user.findFirst({
+        where: { id: userId, deletedAt: null },
+      });
+      if (!existing) {
+        throw new Error(`User ${userId} not found`);
+      }
+      return existing;
+    }
+
+    return this.prisma.user.update({
+      where: { id: userId },
+      data,
+    });
   }
 
   findByEmail(email: string): Promise<User | null> {

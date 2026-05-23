@@ -24,6 +24,13 @@ export {
 } from './auth';
 
 export {
+  updateProfileInputSchema,
+  userProfileOutputSchema,
+  type UpdateProfileInput,
+  type UserProfileOutput,
+} from './user';
+
+export {
   GAME_STATUSES,
   addUserGameInputSchema,
   gameDetailOutputSchema,
