@@ -7,6 +7,7 @@ import { useTranslations } from 'next-intl';
 import { useState, type ReactNode } from 'react';
 import { useForm } from 'react-hook-form';
 
+import { TurnstileWidget } from '@/components/turnstile-widget';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -19,6 +20,7 @@ export default function RegisterPage(): ReactNode {
   const tCommon = useTranslations('auth.common');
   const [apiError, setApiError] = useState<string | null>(null);
   const [registered, setRegistered] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
 
   const form = useForm({
     resolver: zodResolver(registerInputSchema),
@@ -80,7 +82,10 @@ export default function RegisterPage(): ReactNode {
         <form
           onSubmit={(event) => {
             void form.handleSubmit((data) => {
-              mutation.mutate(data);
+              mutation.mutate({
+                ...data,
+                turnstileToken: turnstileToken ?? undefined,
+              });
             })(event);
           }}
           className="flex flex-col gap-4"
@@ -152,6 +157,13 @@ export default function RegisterPage(): ReactNode {
               {apiError}
             </p>
           )}
+
+          <TurnstileWidget
+            onVerify={setTurnstileToken}
+            onExpire={() => {
+              setTurnstileToken(null);
+            }}
+          />
 
           <Button type="submit" disabled={mutation.isPending}>
             {mutation.isPending ? tCommon('submitting') : t('submit')}
