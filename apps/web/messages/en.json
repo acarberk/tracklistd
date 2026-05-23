@@ -41,6 +41,30 @@
     "addToLibrary": "Add to library",
     "summary": "About"
   },
+  "addToLibrary": {
+    "title": "Add to your library",
+    "description": "Track this game with a status, optional rating, and notes.",
+    "statusLabel": "Status",
+    "ratingLabel": "Rating (optional)",
+    "reviewLabel": "Notes (optional)",
+    "reviewPlaceholder": "What did you think?",
+    "submit": "Add to library",
+    "submitting": "Adding...",
+    "cancel": "Cancel",
+    "signInToAdd": "Sign in to add",
+    "inLibrary": "In your library",
+    "status": {
+      "WANT_TO_PLAY": "Want to play",
+      "PLAYING": "Playing",
+      "COMPLETED": "Completed",
+      "DROPPED": "Dropped",
+      "ON_HOLD": "On hold"
+    },
+    "errors": {
+      "alreadyExists": "This game is already in your library.",
+      "unknown": "Could not add the game. Try again."
+    }
+  },
   "auth": {
     "session": {
       "signOut": "Sign out"
