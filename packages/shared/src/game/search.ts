@@ -27,3 +27,19 @@ export const gameSearchOutputSchema = z.object({
 });
 
 export type GameSearchOutput = z.infer<typeof gameSearchOutputSchema>;
+
+export const gameDetailOutputSchema = z.object({
+  id: z.uuid(),
+  igdbId: z.number().int().positive(),
+  slug: z.string(),
+  title: z.string(),
+  summary: z.string().nullable(),
+  coverUrl: z.url().nullable(),
+  releaseDate: z.iso.datetime().nullable(),
+  platforms: z.array(z.string()),
+  genres: z.array(z.string()),
+  igdbRating: z.number().nullable(),
+  igdbRatingCount: z.number().int().nullable(),
+});
+
+export type GameDetailOutput = z.infer<typeof gameDetailOutputSchema>;

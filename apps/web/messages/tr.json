@@ -37,6 +37,10 @@
     "noResults": "\"{query}\" için sonuç bulunamadı.",
     "error": "Arama sırasında bir hata oluştu. Tekrar dene."
   },
+  "gameDetail": {
+    "addToLibrary": "Kütüphaneye ekle",
+    "summary": "Hakkında"
+  },
   "auth": {
     "common": {
       "email": "E-posta",

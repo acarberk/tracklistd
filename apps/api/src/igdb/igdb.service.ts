@@ -67,6 +67,16 @@ export class IgdbService {
     return raw.length > 0 && raw[0] ? this.normalize(raw[0]) : null;
   }
 
+  async findBySlug(slug: string): Promise<IgdbGame | null> {
+    const safeSlug = slug.replace(/["\\;]/g, '').slice(0, 200);
+    if (safeSlug.length === 0) {
+      return null;
+    }
+    const body = [SEARCH_FIELDS, `where slug = "${safeSlug}";`, 'limit 1;'].join(' ');
+    const raw = await this.requestGames(body);
+    return raw.length > 0 && raw[0] ? this.normalize(raw[0]) : null;
+  }
+
   private sanitizeQuery(input: string): string {
     return input
       .trim()
