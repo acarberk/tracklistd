@@ -29,6 +29,14 @@
   "theme": {
     "toggle": "Tema değiştir"
   },
+  "discover": {
+    "title": "Oyunları keşfet",
+    "description": "Oynadığın, oynamakta olduğun veya oynamak istediğin oyunlar için IGDB veritabanında ara.",
+    "searchPlaceholder": "Oyun ara...",
+    "emptyHint": "Sonuçları görmek için oyun adı yazmaya başla.",
+    "noResults": "\"{query}\" için sonuç bulunamadı.",
+    "error": "Arama sırasında bir hata oluştu. Tekrar dene."
+  },
   "auth": {
     "common": {
       "email": "E-posta",
