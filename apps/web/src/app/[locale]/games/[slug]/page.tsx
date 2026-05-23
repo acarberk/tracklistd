@@ -7,7 +7,7 @@ import { type ReactNode } from 'react';
 
 import type { Metadata } from 'next';
 
-import { Button } from '@/components/ui/button';
+import { AddToLibraryButton } from '@/components/add-to-library-button';
 import { getGameBySlug } from '@/lib/api/games';
 
 interface GameDetailPageProps {
@@ -111,9 +111,7 @@ export default async function GameDetailPage({ params }: GameDetailPageProps): P
             ))}
           </div>
 
-          <Button size="lg" disabled className="w-fit">
-            {t('addToLibrary')}
-          </Button>
+          <AddToLibraryButton igdbId={game.igdbId} />
 
           {game.summary && (
             <section className="flex flex-col gap-2 pt-2">

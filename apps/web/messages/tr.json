@@ -41,6 +41,30 @@
     "addToLibrary": "Kütüphaneye ekle",
     "summary": "Hakkında"
   },
+  "addToLibrary": {
+    "title": "Kütüphanene ekle",
+    "description": "Bu oyunu durum, puan ve notlarla takip et.",
+    "statusLabel": "Durum",
+    "ratingLabel": "Puan (opsiyonel)",
+    "reviewLabel": "Notlar (opsiyonel)",
+    "reviewPlaceholder": "Bu oyun hakkında ne düşünüyorsun?",
+    "submit": "Kütüphaneye ekle",
+    "submitting": "Ekleniyor...",
+    "cancel": "İptal",
+    "signInToAdd": "Eklemek için giriş yap",
+    "inLibrary": "Kütüphanende",
+    "status": {
+      "WANT_TO_PLAY": "Oynamak istiyorum",
+      "PLAYING": "Oynuyorum",
+      "COMPLETED": "Bitirdim",
+      "DROPPED": "Bıraktım",
+      "ON_HOLD": "Beklemede"
+    },
+    "errors": {
+      "alreadyExists": "Bu oyun zaten kütüphanende.",
+      "unknown": "Oyun eklenemedi. Tekrar dene."
+    }
+  },
   "auth": {
     "session": {
       "signOut": "Çıkış yap"
