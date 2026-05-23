@@ -6,6 +6,8 @@
   "packageManager": "pnpm@10.32.1",
   "scripts": {
     "dev": "turbo run dev",
+    "dev:up": "docker compose up -d && turbo run dev",
+    "dev:down": "docker compose down",
     "build": "turbo run build",
     "lint": "turbo run lint",
     "test": "turbo run test",
