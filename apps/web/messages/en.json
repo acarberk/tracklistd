@@ -41,6 +41,25 @@
     "addToLibrary": "Add to library",
     "summary": "About"
   },
+  "library": {
+    "title": "Your library",
+    "empty": "No games in this section yet.",
+    "discoverGames": "Discover games",
+    "loadMore": "Load more",
+    "loading": "Loading...",
+    "remove": "Remove",
+    "confirmDelete": "Yes, remove",
+    "cancelDelete": "Cancel",
+    "filterLabel": "Filter by status",
+    "tabs": {
+      "all": "All"
+    },
+    "signInRequired": {
+      "title": "Sign in to see your library",
+      "description": "Track games, films, and shows in your own personal collection.",
+      "cta": "Sign in"
+    }
+  },
   "addToLibrary": {
     "title": "Add to your library",
     "description": "Track this game with a status, optional rating, and notes.",

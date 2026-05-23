@@ -41,6 +41,25 @@
     "addToLibrary": "Kütüphaneye ekle",
     "summary": "Hakkında"
   },
+  "library": {
+    "title": "Kütüphanen",
+    "empty": "Bu kategoride henüz oyun yok.",
+    "discoverGames": "Oyunları keşfet",
+    "loadMore": "Daha fazla yükle",
+    "loading": "Yükleniyor...",
+    "remove": "Kaldır",
+    "confirmDelete": "Evet, kaldır",
+    "cancelDelete": "İptal",
+    "filterLabel": "Duruma göre filtrele",
+    "tabs": {
+      "all": "Tümü"
+    },
+    "signInRequired": {
+      "title": "Kütüphaneni görmek için giriş yap",
+      "description": "Kendi koleksiyonunda oyunları, filmleri ve dizileri takip et.",
+      "cta": "Giriş yap"
+    }
+  },
   "addToLibrary": {
     "title": "Kütüphanene ekle",
     "description": "Bu oyunu durum, puan ve notlarla takip et.",
