@@ -16,6 +16,7 @@ interface CachedToken {
   expiresAt: number;
 }
 
+const TWITCH_TOKEN_URL = 'https://id.twitch.tv/oauth2/token';
 const REDIS_KEY = 'twitch:app_token';
 const REFRESH_MARGIN_MS = 24 * 60 * 60 * 1000;
 const FETCH_TIMEOUT_MS = 10_000;
@@ -67,7 +68,7 @@ export class TwitchAuthService {
   }
 
   private async refreshToken(): Promise<string> {
-    const url = new URL(this.env.twitchTokenUrl);
+    const url = new URL(TWITCH_TOKEN_URL);
     url.searchParams.set('client_id', this.env.twitchClientId);
     url.searchParams.set('client_secret', this.env.twitchClientSecret);
     url.searchParams.set('grant_type', 'client_credentials');

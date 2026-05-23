@@ -87,10 +87,6 @@ export class EnvService {
     return this.configService.get('TURNSTILE_SECRET', { infer: true });
   }
 
-  get turnstileVerifyUrl(): Env['TURNSTILE_VERIFY_URL'] {
-    return this.configService.get('TURNSTILE_VERIFY_URL', { infer: true });
-  }
-
   get isTurnstileEnabled(): boolean {
     return Boolean(this.turnstileSecret);
   }
@@ -101,14 +97,6 @@ export class EnvService {
 
   get twitchClientSecret(): Env['TWITCH_CLIENT_SECRET'] {
     return this.configService.getOrThrow('TWITCH_CLIENT_SECRET', { infer: true });
-  }
-
-  get twitchTokenUrl(): Env['TWITCH_TOKEN_URL'] {
-    return this.configService.getOrThrow('TWITCH_TOKEN_URL', { infer: true });
-  }
-
-  get igdbApiUrl(): Env['IGDB_API_URL'] {
-    return this.configService.getOrThrow('IGDB_API_URL', { infer: true });
   }
 
   get isProduction(): boolean {

@@ -43,14 +43,9 @@ export const envSchema = z.object({
     .transform((value) => value.trim())
     .pipe(z.string())
     .optional(),
-  TURNSTILE_VERIFY_URL: z
-    .url()
-    .default('https://challenges.cloudflare.com/turnstile/v0/siteverify'),
 
   TWITCH_CLIENT_ID: z.string().min(1, 'TWITCH_CLIENT_ID is required'),
   TWITCH_CLIENT_SECRET: z.string().min(1, 'TWITCH_CLIENT_SECRET is required'),
-  TWITCH_TOKEN_URL: z.url().default('https://id.twitch.tv/oauth2/token'),
-  IGDB_API_URL: z.url().default('https://api.igdb.com/v4'),
 });
 
 export type Env = z.infer<typeof envSchema>;

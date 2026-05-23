@@ -30,6 +30,7 @@ export interface IgdbGame {
   igdbRatingCount?: number;
 }
 
+const IGDB_API_URL = 'https://api.igdb.com/v4';
 const FETCH_TIMEOUT_MS = 10_000;
 const MAX_QUERY_LENGTH = 200;
 const SEARCH_FIELDS =
@@ -105,7 +106,7 @@ export class IgdbService {
 
     let response: Response;
     try {
-      response = await fetch(`${this.env.igdbApiUrl}/games`, {
+      response = await fetch(`${IGDB_API_URL}/games`, {
         method: 'POST',
         headers: {
           'Client-ID': this.env.twitchClientId,

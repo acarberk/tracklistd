@@ -5,10 +5,9 @@ import { TurnstileService } from './turnstile.service';
 describe('TurnstileService', () => {
   const VERIFY_URL = 'https://challenges.cloudflare.com/turnstile/v0/siteverify';
 
-  function buildService(overrides: Partial<{ secret: string; verifyUrl: string }> = {}) {
-    const env: Pick<EnvService, 'turnstileSecret' | 'turnstileVerifyUrl' | 'isTurnstileEnabled'> = {
+  function buildService(overrides: Partial<{ secret: string }> = {}) {
+    const env: Pick<EnvService, 'turnstileSecret' | 'isTurnstileEnabled'> = {
       turnstileSecret: overrides.secret ?? '',
-      turnstileVerifyUrl: overrides.verifyUrl ?? VERIFY_URL,
       isTurnstileEnabled: Boolean(overrides.secret),
     };
     return new TurnstileService(env as EnvService);
