@@ -19,9 +19,7 @@ COPY apps/web/package.json apps/web/
 COPY packages/shared/package.json packages/shared/
 COPY packages/config/package.json packages/config/
 COPY packages/ui/package.json packages/ui/
-RUN --mount=type=cache,id=pnpm-store,target=/pnpm-store \
-    pnpm config set store-dir /pnpm-store \
- && pnpm install --frozen-lockfile
+RUN pnpm install --frozen-lockfile
 
 FROM deps AS builder
 COPY packages/config packages/config
