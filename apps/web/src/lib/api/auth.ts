@@ -43,6 +43,10 @@ export async function logout(): Promise<void> {
   }
 }
 
+export async function resendVerification(email: string): Promise<void> {
+  await apiClient.post('/auth/resend-verification', { email });
+}
+
 export async function getProfile(): Promise<UserProfileOutput> {
   const response = await apiClient.get<UserProfileOutput>('/users/me');
   return response.data;

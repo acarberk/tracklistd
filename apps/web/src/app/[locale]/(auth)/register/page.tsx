@@ -6,6 +6,7 @@ import { registerInputSchema, type RegisterInput, type RegisterOutput } from '@t
 import { useTranslations } from 'next-intl';
 import { useState, type ReactNode } from 'react';
 import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 
 import { TurnstileWidget } from '@/components/turnstile-widget';
 import { Button } from '@/components/ui/button';
@@ -19,6 +20,7 @@ import { useAuthStore } from '@/stores/auth-store';
 export default function RegisterPage(): ReactNode {
   const t = useTranslations('auth.register');
   const tCommon = useTranslations('auth.common');
+  const tToast = useTranslations('auth.toast');
   const router = useRouter();
   const [apiError, setApiError] = useState<string | null>(null);
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
@@ -41,6 +43,9 @@ export default function RegisterPage(): ReactNode {
     onSuccess: (data) => {
       setApiError(null);
       useAuthStore.getState().setSession(data.accessToken, data.user);
+      toast.success(tToast('registerSuccess', { name: data.user.displayName }), {
+        description: tToast('registerSuccessDescription'),
+      });
       router.push('/');
     },
     onError: (error) => {

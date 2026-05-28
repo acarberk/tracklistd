@@ -106,6 +106,19 @@
     "session": {
       "signOut": "Sign out"
     },
+    "toast": {
+      "registerSuccess": "Account created — welcome, {name}!",
+      "registerSuccessDescription": "We sent a verification link to your email. Open it to activate your account.",
+      "loginSuccess": "Welcome back, {name}!",
+      "verificationResent": "Verification email sent. Check your inbox.",
+      "verificationResendError": "Could not send the email. Please try again."
+    },
+    "verifyBanner": {
+      "message": "Verify your email to unlock your full account.",
+      "description": "We sent a link to {email}.",
+      "resend": "Resend email",
+      "resending": "Sending..."
+    },
     "common": {
       "email": "Email",
       "emailPlaceholder": "you@example.com",

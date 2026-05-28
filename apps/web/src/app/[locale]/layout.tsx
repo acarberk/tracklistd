@@ -8,10 +8,12 @@ import type { Metadata, Viewport } from 'next';
 import type { ReactNode } from 'react';
 
 import { AuthBootstrap } from '@/components/auth-bootstrap';
+import { EmailVerificationBanner } from '@/components/email-verification-banner';
 import { QueryProvider } from '@/components/query-provider';
 import { SiteFooter } from '@/components/site-footer';
 import { SiteHeader } from '@/components/site-header';
 import { ThemeProvider } from '@/components/theme-provider';
+import { Toaster } from '@/components/ui/sonner';
 import { routing } from '@/i18n/routing';
 
 export const metadata: Metadata = {
@@ -64,10 +66,12 @@ export default async function LocaleLayout({
             <QueryProvider>
               <AuthBootstrap>
                 <SiteHeader />
+                <EmailVerificationBanner />
                 <div className="flex-1">{children}</div>
                 <SiteFooter />
               </AuthBootstrap>
             </QueryProvider>
+            <Toaster />
           </ThemeProvider>
         </NextIntlClientProvider>
       </body>
