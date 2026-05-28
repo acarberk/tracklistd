@@ -6,6 +6,7 @@ import { loginInputSchema, type LoginInput, type LoginOutput } from '@tracklistd
 import { useTranslations } from 'next-intl';
 import { useState, type ReactNode } from 'react';
 import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 
 import { TurnstileWidget } from '@/components/turnstile-widget';
 import { Button } from '@/components/ui/button';
@@ -19,6 +20,7 @@ import { useAuthStore } from '@/stores/auth-store';
 export default function LoginPage(): ReactNode {
   const t = useTranslations('auth.login');
   const tCommon = useTranslations('auth.common');
+  const tToast = useTranslations('auth.toast');
   const router = useRouter();
   const [apiError, setApiError] = useState<string | null>(null);
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
@@ -36,6 +38,7 @@ export default function LoginPage(): ReactNode {
     onSuccess: (data) => {
       setApiError(null);
       useAuthStore.getState().setSession(data.accessToken, data.user);
+      toast.success(tToast('loginSuccess', { name: data.user.displayName }));
       router.push('/');
     },
     onError: (error) => {

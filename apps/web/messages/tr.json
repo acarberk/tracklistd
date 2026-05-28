@@ -106,6 +106,19 @@
     "session": {
       "signOut": "Çıkış yap"
     },
+    "toast": {
+      "registerSuccess": "Hesabın oluşturuldu — hoş geldin, {name}!",
+      "registerSuccessDescription": "E-postana bir doğrulama bağlantısı gönderdik. Hesabını etkinleştirmek için aç.",
+      "loginSuccess": "Tekrar hoş geldin, {name}!",
+      "verificationResent": "Doğrulama e-postası gönderildi. Gelen kutunu kontrol et.",
+      "verificationResendError": "E-posta gönderilemedi. Lütfen tekrar dene."
+    },
+    "verifyBanner": {
+      "message": "Hesabını tam olarak açmak için e-postanı doğrula.",
+      "description": "{email} adresine bir bağlantı gönderdik.",
+      "resend": "E-postayı tekrar gönder",
+      "resending": "Gönderiliyor..."
+    },
     "common": {
       "email": "E-posta",
       "emailPlaceholder": "siz@ornek.com",
