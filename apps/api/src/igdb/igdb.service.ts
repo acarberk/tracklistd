@@ -61,6 +61,18 @@ export class IgdbService {
     return raw.map((item) => this.normalize(item));
   }
 
+  async popular(limit = 12): Promise<IgdbGame[]> {
+    const body = [
+      SEARCH_FIELDS,
+      'where rating_count > 50 & cover != null & category = 0;',
+      'sort rating_count desc;',
+      `limit ${String(Math.min(Math.max(limit, 1), 50))};`,
+    ].join(' ');
+
+    const raw = await this.requestGames(body);
+    return raw.map((item) => this.normalize(item));
+  }
+
   async findByIgdbId(igdbId: number): Promise<IgdbGame | null> {
     const body = [SEARCH_FIELDS, `where id = ${String(igdbId)};`, 'limit 1;'].join(' ');
     const raw = await this.requestGames(body);

@@ -40,6 +40,18 @@ export class GameController {
     return { results };
   }
 
+  @Get('popular')
+  @Throttle({ default: { limit: 30, ttl: 60_000 } })
+  @ApiOperation({ summary: 'List popular games via IGDB (most-rated, main games with covers)' })
+  @ApiQuery({ name: 'limit', required: false, type: Number, example: 12 })
+  @ApiOkResponse({ type: GameSearchResponseDto })
+  async popular(@Query('limit') limit?: string): Promise<GameSearchResponseDto> {
+    const parsed = Number(limit);
+    const safeLimit = Number.isFinite(parsed) && parsed > 0 ? Math.min(parsed, 50) : 12;
+    const results = await this.igdb.popular(safeLimit);
+    return { results };
+  }
+
   @Get(':slug')
   @Throttle({ default: { limit: 60, ttl: 60_000 } })
   @ApiOperation({ summary: 'Get a game detail snapshot by slug (cached after first fetch)' })
