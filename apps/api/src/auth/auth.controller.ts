@@ -270,7 +270,7 @@ export class AuthController {
       `Expires=${expiresAt.toUTCString()}`,
       'HttpOnly',
       `Path=${REFRESH_COOKIE_PATH}`,
-      'SameSite=Lax',
+      `SameSite=${this.env.isProduction ? 'None' : 'Lax'}`,
     ];
     if (this.env.isProduction) {
       parts.push('Secure');
