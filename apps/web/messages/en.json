@@ -83,6 +83,11 @@
     "remove": "Remove",
     "confirmDelete": "Yes, remove",
     "cancelDelete": "Cancel",
+    "edit": "Edit",
+    "editEntry": "Edit entry",
+    "save": "Save",
+    "saving": "Saving...",
+    "updateError": "Couldn't save changes. Please try again.",
     "filterLabel": "Filter by status",
     "tabs": {
       "all": "All"

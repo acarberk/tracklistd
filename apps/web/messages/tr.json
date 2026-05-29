@@ -83,6 +83,11 @@
     "remove": "Kaldır",
     "confirmDelete": "Evet, kaldır",
     "cancelDelete": "İptal",
+    "edit": "Düzenle",
+    "editEntry": "Kaydı düzenle",
+    "save": "Kaydet",
+    "saving": "Kaydediliyor...",
+    "updateError": "Değişiklikler kaydedilemedi. Lütfen tekrar dene.",
     "filterLabel": "Duruma göre filtrele",
     "tabs": {
       "all": "Tümü"
