@@ -29,6 +29,40 @@ export class UserProfileDto {
   createdAt!: string;
 }
 
+export class PublicProfileStatsDto {
+  @ApiProperty({ example: 42 })
+  total!: number;
+
+  @ApiProperty({
+    description: 'Count of games per status',
+    example: { WANT_TO_PLAY: 5, PLAYING: 2, COMPLETED: 30, DROPPED: 3, ON_HOLD: 2 },
+  })
+  byStatus!: Record<string, number>;
+}
+
+export class PublicProfileDto {
+  @ApiProperty()
+  username!: string;
+
+  @ApiProperty()
+  displayName!: string;
+
+  @ApiProperty({ nullable: true, format: 'uri' })
+  avatarUrl!: string | null;
+
+  @ApiProperty({ nullable: true, maxLength: 500 })
+  bio!: string | null;
+
+  @ApiProperty({ nullable: true, example: 'TR', description: 'ISO 3166-1 alpha-2 country code' })
+  country!: string | null;
+
+  @ApiProperty({ format: 'date-time' })
+  createdAt!: string;
+
+  @ApiProperty({ type: PublicProfileStatsDto })
+  stats!: PublicProfileStatsDto;
+}
+
 export class UpdateProfileDto {
   @ApiProperty({ required: false, minLength: 1, maxLength: 100 })
   displayName?: string;

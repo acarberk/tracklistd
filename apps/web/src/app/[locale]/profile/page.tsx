@@ -137,6 +137,12 @@ function ProfileView({
           {profile.bio && <Row label={t('bio')} value={profile.bio} multiline />}
           {profile.country && <Row label={t('country')} value={profile.country} />}
           <Row label={t('memberSince')} value={memberSince} />
+          <Link
+            href={`/u/${profile.username}`}
+            className="text-sm text-foreground underline-offset-4 hover:underline"
+          >
+            {t('viewPublic')}
+          </Link>
         </CardContent>
       </Card>
     </main>
