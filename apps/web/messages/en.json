@@ -125,7 +125,9 @@
       "password": "Password",
       "submitting": "Submitting...",
       "errors": {
-        "unknown": "Something went wrong. Please try again."
+        "unknown": "Something went wrong. Please try again.",
+        "rateLimited": "Too many attempts. Please wait a moment and try again.",
+        "rateLimitedWithTime": "Too many attempts. Please try again in about {minutes} min."
       }
     },
     "login": {

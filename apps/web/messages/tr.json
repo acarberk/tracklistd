@@ -125,7 +125,9 @@
       "password": "Şifre",
       "submitting": "Gönderiliyor...",
       "errors": {
-        "unknown": "Bir şeyler ters gitti. Lütfen tekrar deneyin."
+        "unknown": "Bir şeyler ters gitti. Lütfen tekrar deneyin.",
+        "rateLimited": "Çok fazla deneme. Lütfen biraz bekleyip tekrar deneyin.",
+        "rateLimitedWithTime": "Çok fazla deneme. Yaklaşık {minutes} dk sonra tekrar deneyin."
       }
     },
     "login": {

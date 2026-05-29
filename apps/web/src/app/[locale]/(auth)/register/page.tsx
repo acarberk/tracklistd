@@ -50,7 +50,14 @@ export default function RegisterPage(): ReactNode {
     },
     onError: (error) => {
       const apiErr = extractApiError(error);
-      if (apiErr.code === 'AUTH_EMAIL_TAKEN') {
+      if (apiErr.status === 429) {
+        const secs = apiErr.retryAfterSeconds;
+        setApiError(
+          secs && secs >= 60
+            ? tCommon('errors.rateLimitedWithTime', { minutes: Math.ceil(secs / 60) })
+            : tCommon('errors.rateLimited'),
+        );
+      } else if (apiErr.code === 'AUTH_EMAIL_TAKEN') {
         setApiError(t('errors.emailTaken'));
       } else if (apiErr.code === 'AUTH_USERNAME_TAKEN') {
         setApiError(t('errors.usernameTaken'));

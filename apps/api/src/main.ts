@@ -34,6 +34,7 @@ async function bootstrap(): Promise<void> {
     origin: envService.appBaseUrl,
     credentials: true,
     methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS'],
+    exposedHeaders: ['Retry-After'],
   });
 
   if (!envService.isProduction) {

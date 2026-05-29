@@ -81,7 +81,7 @@ export class AuthController {
 
   @Post('register')
   @HttpCode(HttpStatus.CREATED)
-  @Throttle({ default: { limit: 3, ttl: 3_600_000 } })
+  @Throttle({ default: { limit: 10, ttl: 3_600_000 } })
   @UseGuards(TurnstileGuard)
   @UsePipes(new ZodValidationPipe(registerInputSchema))
   @ApiOperation({ summary: 'Register a new user with email and password' })
