@@ -16,11 +16,24 @@ export const apiClient: AxiosInstance = axios.create({
 export interface ApiErrorResponse {
   code?: string;
   message?: string;
+  status?: number;
+  retryAfterSeconds?: number;
+}
+
+function parseRetryAfterSeconds(value: unknown): number | undefined {
+  if (typeof value !== 'string' || !/^\d+$/.test(value)) {
+    return undefined;
+  }
+  return Number(value);
 }
 
 export function extractApiError(error: unknown): ApiErrorResponse {
   if (axios.isAxiosError<ApiErrorResponse>(error) && error.response) {
-    return error.response.data;
+    return {
+      ...error.response.data,
+      status: error.response.status,
+      retryAfterSeconds: parseRetryAfterSeconds(error.response.headers['retry-after']),
+    };
   }
   return {};
 }

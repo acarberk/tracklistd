@@ -43,11 +43,18 @@ export default function LoginPage(): ReactNode {
     },
     onError: (error) => {
       const apiErr = extractApiError(error);
-      setApiError(
-        apiErr.code === 'AUTH_INVALID_CREDENTIALS'
-          ? t('errors.invalid')
-          : tCommon('errors.unknown'),
-      );
+      if (apiErr.status === 429) {
+        const secs = apiErr.retryAfterSeconds;
+        setApiError(
+          secs && secs >= 60
+            ? tCommon('errors.rateLimitedWithTime', { minutes: Math.ceil(secs / 60) })
+            : tCommon('errors.rateLimited'),
+        );
+      } else if (apiErr.code === 'AUTH_INVALID_CREDENTIALS') {
+        setApiError(t('errors.invalid'));
+      } else {
+        setApiError(tCommon('errors.unknown'));
+      }
     },
   });
 
