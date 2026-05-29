@@ -1,7 +1,7 @@
 'use client';
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { GAME_STATUSES, type GameStatus } from '@tracklistd/shared';
+import { GAME_STATUSES, type GameStatus, type UserGameOutput } from '@tracklistd/shared';
 import { useTranslations } from 'next-intl';
 import { useState, type ReactNode } from 'react';
 
@@ -18,52 +18,44 @@ import {
 import { Label } from '@/components/ui/label';
 import { Select } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import { addUserGame } from '@/lib/api/user-games';
+import { updateUserGame } from '@/lib/api/user-games';
 import { extractApiError } from '@/lib/api-client';
 
-interface AddToLibraryDialogProps {
-  igdbId: number;
+interface EditLibraryDialogProps {
+  entry: UserGameOutput;
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onAdded?: () => void;
 }
 
-export function AddToLibraryDialog({
-  igdbId,
+export function EditLibraryDialog({
+  entry,
   open,
   onOpenChange,
-  onAdded,
-}: AddToLibraryDialogProps): ReactNode {
-  const t = useTranslations('addToLibrary');
+}: EditLibraryDialogProps): ReactNode {
+  const t = useTranslations('library');
+  const tAdd = useTranslations('addToLibrary');
   const tStatus = useTranslations('addToLibrary.status');
   const queryClient = useQueryClient();
 
-  const [status, setStatus] = useState<GameStatus>('WANT_TO_PLAY');
-  const [rating, setRating] = useState<number | null>(null);
-  const [review, setReview] = useState('');
+  const [status, setStatus] = useState<GameStatus>(entry.status);
+  const [rating, setRating] = useState<number | null>(entry.rating);
+  const [review, setReview] = useState(entry.review ?? '');
   const [apiError, setApiError] = useState<string | null>(null);
 
   const mutation = useMutation({
     mutationFn: () =>
-      addUserGame({
-        igdbId,
+      updateUserGame(entry.id, {
         status,
-        rating: rating ?? undefined,
-        review: review.trim() || undefined,
+        rating,
+        review: review.trim() ? review.trim() : null,
       }),
     onSuccess: () => {
       setApiError(null);
       void queryClient.invalidateQueries({ queryKey: ['library'] });
-      onAdded?.();
       onOpenChange(false);
     },
     onError: (error) => {
-      const err = extractApiError(error);
-      if (err.code === 'USER_GAME_ALREADY_EXISTS') {
-        setApiError(t('errors.alreadyExists'));
-      } else {
-        setApiError(t('errors.unknown'));
-      }
+      setApiError(extractApiError(error).message ?? t('updateError'));
     },
   });
 
@@ -71,8 +63,8 @@ export function AddToLibraryDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{t('title')}</DialogTitle>
-          <DialogDescription>{t('description')}</DialogDescription>
+          <DialogTitle>{t('editEntry')}</DialogTitle>
+          <DialogDescription>{entry.game.title}</DialogDescription>
         </DialogHeader>
 
         <form
@@ -83,9 +75,9 @@ export function AddToLibraryDialog({
           }}
         >
           <div className="flex flex-col gap-2">
-            <Label htmlFor="status">{t('statusLabel')}</Label>
+            <Label htmlFor="edit-status">{tAdd('statusLabel')}</Label>
             <Select
-              id="status"
+              id="edit-status"
               value={status}
               onChange={(event) => {
                 setStatus(event.target.value as GameStatus);
@@ -101,19 +93,19 @@ export function AddToLibraryDialog({
           </div>
 
           <div className="flex flex-col gap-2">
-            <Label>{t('ratingLabel')}</Label>
+            <Label>{tAdd('ratingLabel')}</Label>
             <StarRating value={rating} onChange={setRating} disabled={mutation.isPending} />
           </div>
 
           <div className="flex flex-col gap-2">
-            <Label htmlFor="review">{t('reviewLabel')}</Label>
+            <Label htmlFor="edit-review">{tAdd('reviewLabel')}</Label>
             <Textarea
-              id="review"
+              id="edit-review"
               value={review}
               onChange={(event) => {
                 setReview(event.target.value);
               }}
-              placeholder={t('reviewPlaceholder')}
+              placeholder={tAdd('reviewPlaceholder')}
               rows={4}
               maxLength={10_000}
               disabled={mutation.isPending}
@@ -135,10 +127,10 @@ export function AddToLibraryDialog({
               }}
               disabled={mutation.isPending}
             >
-              {t('cancel')}
+              {tAdd('cancel')}
             </Button>
             <Button type="submit" disabled={mutation.isPending}>
-              {mutation.isPending ? t('submitting') : t('submit')}
+              {mutation.isPending ? t('saving') : t('save')}
             </Button>
           </DialogFooter>
         </form>

@@ -2,11 +2,12 @@
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { GAME_STATUSES, type GameStatus, type UserGameOutput } from '@tracklistd/shared';
-import { Gamepad2, Star, Trash2 } from 'lucide-react';
+import { Gamepad2, Pencil, Star, Trash2 } from 'lucide-react';
 import Image from 'next/image';
 import { useTranslations } from 'next-intl';
 import { useState, type ReactNode } from 'react';
 
+import { EditLibraryDialog } from '@/components/edit-library-dialog';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Select } from '@/components/ui/select';
 import { Link } from '@/i18n/navigation';
@@ -22,6 +23,7 @@ export function LibraryCard({ entry }: LibraryCardProps): ReactNode {
   const tStatus = useTranslations('addToLibrary.status');
   const queryClient = useQueryClient();
   const [confirmingDelete, setConfirmingDelete] = useState(false);
+  const [editing, setEditing] = useState(false);
 
   const updateMutation = useMutation({
     mutationFn: (status: GameStatus) => updateUserGame(entry.id, { status }),
@@ -78,6 +80,10 @@ export function LibraryCard({ entry }: LibraryCardProps): ReactNode {
           )}
         </div>
 
+        {entry.review && (
+          <p className="line-clamp-2 text-xs italic text-muted-foreground">{entry.review}</p>
+        )}
+
         <Select
           value={entry.status}
           onChange={(event) => {
@@ -92,6 +98,21 @@ export function LibraryCard({ entry }: LibraryCardProps): ReactNode {
             </option>
           ))}
         </Select>
+
+        <button
+          type="button"
+          className={cn(
+            buttonVariants({ variant: 'outline', size: 'sm' }),
+            'h-8 justify-start text-xs',
+          )}
+          onClick={() => {
+            setEditing(true);
+          }}
+          disabled={isBusy}
+        >
+          <Pencil className="h-3 w-3" />
+          {t('edit')}
+        </button>
 
         {confirmingDelete ? (
           <div className="flex gap-1">
@@ -135,6 +156,8 @@ export function LibraryCard({ entry }: LibraryCardProps): ReactNode {
           </button>
         )}
       </div>
+
+      <EditLibraryDialog entry={entry} open={editing} onOpenChange={setEditing} />
     </div>
   );
 }
