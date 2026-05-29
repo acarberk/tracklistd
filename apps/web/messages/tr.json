@@ -178,7 +178,8 @@
       "success": {
         "title": "E-posta doğrulandı",
         "description": "Hesabın artık aktif.",
-        "goToLogin": "Giriş yap"
+        "goToLogin": "Giriş yap",
+        "continue": "Tracklistd'ye devam et"
       },
       "errors": {
         "title": "E-postanı doğrulayamadık",
