@@ -159,6 +159,17 @@ export class AuthController {
     return this.auth.me(req.user.sub);
   }
 
+  @Post('me/resend-verification')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @Throttle({ default: { limit: 3, ttl: 3_600_000 } })
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Resend the verification email to the authenticated user' })
+  @ApiNoContentResponse({ description: 'Verification email re-sent if the account is unverified' })
+  async resendVerificationForCurrentUser(@Req() req: AuthenticatedRequest): Promise<void> {
+    await this.emailVerification.resendForEmail(req.user.email);
+  }
+
   @Get('verify-email')
   @ApiOperation({ summary: 'Verify the email address using the token from the link' })
   @ApiQuery({ name: 'token', required: true, type: String })
