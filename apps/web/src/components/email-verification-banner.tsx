@@ -25,7 +25,7 @@ export function EmailVerificationBanner(): ReactNode {
     }
     setIsSending(true);
     try {
-      await resendVerification(user.email);
+      await resendVerification();
       toast.success(tToast('verificationResent'));
     } catch {
       toast.error(tToast('verificationResendError'));

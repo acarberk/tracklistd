@@ -43,8 +43,8 @@ export async function logout(): Promise<void> {
   }
 }
 
-export async function resendVerification(email: string): Promise<void> {
-  await apiClient.post('/auth/resend-verification', { email });
+export async function resendVerification(): Promise<void> {
+  await apiClient.post('/auth/me/resend-verification');
 }
 
 export async function getProfile(): Promise<UserProfileOutput> {
