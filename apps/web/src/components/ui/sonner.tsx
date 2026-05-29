@@ -10,7 +10,7 @@ export function Toaster(props: ToasterProps): ReactNode {
   return (
     <Sonner
       theme={theme as ToasterProps['theme']}
-      position="top-center"
+      position="bottom-right"
       richColors
       closeButton
       {...props}
