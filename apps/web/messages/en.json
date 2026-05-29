@@ -53,10 +53,24 @@
     "memberSince": "Member since",
     "save": "Save changes",
     "cancel": "Cancel",
+    "viewPublic": "View public profile",
     "signInRequired": {
       "title": "Sign in to view your profile",
       "description": "Your collection, friends, and stats live here.",
       "cta": "Sign in"
+    }
+  },
+  "publicProfile": {
+    "memberSince": "Member since",
+    "errorTitle": "Something went wrong",
+    "error": "Couldn't load this profile. Please try again.",
+    "notFound": {
+      "title": "User not found",
+      "description": "There's no Tracklistd user with that username."
+    },
+    "stats": {
+      "title": "Library",
+      "total": "{count} games tracked"
     }
   },
   "library": {

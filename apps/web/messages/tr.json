@@ -53,10 +53,24 @@
     "memberSince": "Üyelik tarihi",
     "save": "Kaydet",
     "cancel": "İptal",
+    "viewPublic": "Herkese açık profili gör",
     "signInRequired": {
       "title": "Profilini görmek için giriş yap",
       "description": "Koleksiyonun, arkadaşların ve istatistiklerin burada.",
       "cta": "Giriş yap"
+    }
+  },
+  "publicProfile": {
+    "memberSince": "Üyelik tarihi",
+    "errorTitle": "Bir şeyler ters gitti",
+    "error": "Bu profil yüklenemedi. Lütfen tekrar dene.",
+    "notFound": {
+      "title": "Kullanıcı bulunamadı",
+      "description": "Bu kullanıcı adına sahip bir Tracklistd kullanıcısı yok."
+    },
+    "stats": {
+      "title": "Kütüphane",
+      "total": "{count} oyun takip ediliyor"
     }
   },
   "library": {

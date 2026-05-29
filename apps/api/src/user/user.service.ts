@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { type User } from '@prisma/client';
+import { GAME_STATUSES, type GameStatus, type PublicProfileOutput } from '@tracklistd/shared';
 
 import { PrismaService } from '../prisma/prisma.service';
 
@@ -73,6 +74,39 @@ export class UserService {
     return this.prisma.user.findFirst({
       where: { username: username.toLowerCase(), deletedAt: null },
     });
+  }
+
+  async getPublicProfile(username: string): Promise<PublicProfileOutput | null> {
+    const user = await this.findByUsername(username);
+    if (!user) {
+      return null;
+    }
+
+    const grouped = await this.prisma.userGame.groupBy({
+      by: ['status'],
+      where: { userId: user.id },
+      _count: { status: true },
+    });
+
+    const byStatus = Object.fromEntries(GAME_STATUSES.map((status) => [status, 0])) as Record<
+      GameStatus,
+      number
+    >;
+    let total = 0;
+    for (const row of grouped) {
+      byStatus[row.status] = row._count.status;
+      total += row._count.status;
+    }
+
+    return {
+      username: user.username,
+      displayName: user.displayName,
+      avatarUrl: user.avatarUrl,
+      bio: user.bio,
+      country: user.country,
+      createdAt: user.createdAt.toISOString(),
+      stats: { total, byStatus },
+    };
   }
 
   findByGoogleId(googleId: string): Promise<User | null> {
