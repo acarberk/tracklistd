@@ -64,7 +64,7 @@ export class IgdbService {
   async popular(limit = 12): Promise<IgdbGame[]> {
     const body = [
       SEARCH_FIELDS,
-      'where rating_count > 50 & cover != null & category = 0;',
+      'where rating_count > 50 & cover != null & game_type = 0;',
       'sort rating_count desc;',
       `limit ${String(Math.min(Math.max(limit, 1), 50))};`,
     ].join(' ');
