@@ -10,17 +10,18 @@
     "signIn": "Giriş yap"
   },
   "home": {
-    "smokeTest": {
-      "title": "UI bileşenleri smoke testi",
-      "description": "shadcn/ui + Tailwind v4 + CSS değişkenleri çalışıyor.",
-      "inputPlaceholder": "Bir şeyler yazın...",
-      "buttons": {
-        "default": "Varsayılan",
-        "secondary": "İkincil",
-        "outline": "Dış çizgi",
-        "ghost": "Hayalet",
-        "destructive": "Yıkıcı"
-      }
+    "hero": {
+      "getStarted": "Hemen başla",
+      "signIn": "Giriş yap"
+    },
+    "welcome": "Tekrar hoş geldin, {name}",
+    "quick": {
+      "discover": "Oyunları keşfet",
+      "library": "Kütüphanen"
+    },
+    "popular": {
+      "title": "Popüler oyunlar",
+      "error": "Oyunlar yüklenemedi. Lütfen tekrar dene."
     }
   },
   "footer": {

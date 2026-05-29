@@ -10,17 +10,18 @@
     "signIn": "Sign in"
   },
   "home": {
-    "smokeTest": {
-      "title": "UI components smoke test",
-      "description": "shadcn/ui + Tailwind v4 + CSS variables wired up.",
-      "inputPlaceholder": "Type something...",
-      "buttons": {
-        "default": "Default",
-        "secondary": "Secondary",
-        "outline": "Outline",
-        "ghost": "Ghost",
-        "destructive": "Destructive"
-      }
+    "hero": {
+      "getStarted": "Get started",
+      "signIn": "Sign in"
+    },
+    "welcome": "Welcome back, {name}",
+    "quick": {
+      "discover": "Discover games",
+      "library": "Your library"
+    },
+    "popular": {
+      "title": "Popular games",
+      "error": "Couldn't load games. Please try again."
     }
   },
   "footer": {
