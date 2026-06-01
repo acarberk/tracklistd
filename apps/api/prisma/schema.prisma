@@ -29,6 +29,7 @@ model User {
   emailTokens          EmailVerificationToken[]
   passwordResetTokens  PasswordResetToken[]
   games                UserGame[]
+  gameLists            GameList[]
 
   @@index([email])
   @@index([username])
@@ -152,6 +153,7 @@ model Game {
   lastSyncedAt DateTime @default(now()) @map("last_synced_at")
 
   userGames UserGame[]
+  listItems GameListItem[]
 
   @@index([title])
   @@index([releaseDate])
@@ -181,4 +183,37 @@ model UserGame {
   @@index([gameId])
   @@index([userId, status])
   @@map("user_games")
+}
+
+model GameList {
+  id          String  @id @default(uuid()) @db.Uuid
+  userId      String  @map("user_id") @db.Uuid
+  user        User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name        String
+  description String? @db.Text
+  isPublic    Boolean @default(true) @map("is_public")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  items GameListItem[]
+
+  @@index([userId])
+  @@map("game_lists")
+}
+
+model GameListItem {
+  id     String   @id @default(uuid()) @db.Uuid
+  listId String   @map("list_id") @db.Uuid
+  list   GameList @relation(fields: [listId], references: [id], onDelete: Cascade)
+  gameId String   @map("game_id") @db.Uuid
+  game   Game     @relation(fields: [gameId], references: [id], onDelete: Cascade)
+
+  position  Int      @default(0)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@unique([listId, gameId])
+  @@index([listId])
+  @@index([gameId])
+  @@map("game_list_items")
 }
