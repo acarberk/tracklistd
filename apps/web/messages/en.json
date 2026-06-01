@@ -55,6 +55,7 @@
     "save": "Save changes",
     "cancel": "Cancel",
     "viewPublic": "View public profile",
+    "viewStats": "View your stats",
     "signInRequired": {
       "title": "Sign in to view your profile",
       "description": "Your collection, friends, and stats live here.",
@@ -74,6 +75,22 @@
       "total": "{count} games tracked"
     },
     "topGames": "Top games"
+  },
+  "stats": {
+    "title": "Your stats",
+    "totalGames": "Games",
+    "totalHours": "Hours played",
+    "averageRating": "Avg. rating",
+    "byStatus": "By status",
+    "topGenres": "Top genres",
+    "topPlatforms": "Top platforms",
+    "empty": "Add games to your library to see your stats.",
+    "discover": "Discover games",
+    "signInRequired": {
+      "title": "Sign in to see your stats",
+      "description": "Your genres, platforms, and play history live here.",
+      "cta": "Sign in"
+    }
   },
   "library": {
     "title": "Your library",

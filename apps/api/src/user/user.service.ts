@@ -5,9 +5,12 @@ import {
   type GameStatus,
   type PublicProfileOutput,
   type PublicUserGame,
+  type UserStatsOutput,
 } from '@tracklistd/shared';
 
 import { PrismaService } from '../prisma/prisma.service';
+
+const TOP_BUCKET_LIMIT = 8;
 
 export interface SoftDeleteResult {
   userId: string;
@@ -136,6 +139,58 @@ export class UserService {
       status: entry.status,
       rating: entry.rating,
     }));
+  }
+
+  async getStats(userId: string): Promise<UserStatsOutput> {
+    const entries = await this.prisma.userGame.findMany({
+      where: { userId },
+      select: {
+        status: true,
+        rating: true,
+        hoursPlayed: true,
+        game: { select: { genres: true, platforms: true } },
+      },
+    });
+
+    const byStatus = Object.fromEntries(GAME_STATUSES.map((status) => [status, 0])) as Record<
+      GameStatus,
+      number
+    >;
+    const genreCounts = new Map<string, number>();
+    const platformCounts = new Map<string, number>();
+    let totalHours = 0;
+    let ratingSum = 0;
+    let ratingCount = 0;
+
+    for (const entry of entries) {
+      byStatus[entry.status] += 1;
+      totalHours += entry.hoursPlayed ?? 0;
+      if (entry.rating !== null) {
+        ratingSum += entry.rating;
+        ratingCount += 1;
+      }
+      for (const genre of entry.game.genres) {
+        genreCounts.set(genre, (genreCounts.get(genre) ?? 0) + 1);
+      }
+      for (const platform of entry.game.platforms) {
+        platformCounts.set(platform, (platformCounts.get(platform) ?? 0) + 1);
+      }
+    }
+
+    const topBuckets = (counts: Map<string, number>): { name: string; count: number }[] =>
+      [...counts.entries()]
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, TOP_BUCKET_LIMIT)
+        .map(([name, count]) => ({ name, count }));
+
+    return {
+      totalGames: entries.length,
+      totalHours,
+      averageRating: ratingCount > 0 ? Math.round((ratingSum / ratingCount) * 10) / 10 : null,
+      byStatus,
+      topGenres: topBuckets(genreCounts),
+      topPlatforms: topBuckets(platformCounts),
+    };
   }
 
   findByGoogleId(googleId: string): Promise<User | null> {

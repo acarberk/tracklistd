@@ -28,13 +28,16 @@ export {
   publicProfileStatsSchema,
   publicUserGameSchema,
   publicUserGamesOutputSchema,
+  statBucketSchema,
   updateProfileInputSchema,
   userProfileOutputSchema,
+  userStatsOutputSchema,
   type PublicProfileOutput,
   type PublicUserGame,
   type PublicUserGamesOutput,
   type UpdateProfileInput,
   type UserProfileOutput,
+  type UserStatsOutput,
 } from './user';
 
 export {

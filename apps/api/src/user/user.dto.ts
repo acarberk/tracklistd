@@ -91,6 +91,34 @@ export class PublicUserGamesDto {
   items!: PublicUserGameDto[];
 }
 
+export class StatBucketDto {
+  @ApiProperty({ example: 'Role-playing (RPG)' })
+  name!: string;
+
+  @ApiProperty({ example: 12 })
+  count!: number;
+}
+
+export class UserStatsDto {
+  @ApiProperty({ example: 42 })
+  totalGames!: number;
+
+  @ApiProperty({ example: 360 })
+  totalHours!: number;
+
+  @ApiProperty({ nullable: true, example: 7.8 })
+  averageRating!: number | null;
+
+  @ApiProperty({ example: { WANT_TO_PLAY: 5, PLAYING: 2, COMPLETED: 30, DROPPED: 3, ON_HOLD: 2 } })
+  byStatus!: Record<string, number>;
+
+  @ApiProperty({ type: [StatBucketDto] })
+  topGenres!: StatBucketDto[];
+
+  @ApiProperty({ type: [StatBucketDto] })
+  topPlatforms!: StatBucketDto[];
+}
+
 export class UpdateProfileDto {
   @ApiProperty({ required: false, minLength: 1, maxLength: 100 })
   displayName?: string;

@@ -67,3 +67,19 @@ export const publicUserGamesOutputSchema = z.object({
 });
 
 export type PublicUserGamesOutput = z.infer<typeof publicUserGamesOutputSchema>;
+
+export const statBucketSchema = z.object({
+  name: z.string(),
+  count: z.number().int().nonnegative(),
+});
+
+export const userStatsOutputSchema = z.object({
+  totalGames: z.number().int().nonnegative(),
+  totalHours: z.number().int().nonnegative(),
+  averageRating: z.number().nullable(),
+  byStatus: z.record(gameStatusSchema, z.number().int().nonnegative()),
+  topGenres: z.array(statBucketSchema),
+  topPlatforms: z.array(statBucketSchema),
+});
+
+export type UserStatsOutput = z.infer<typeof userStatsOutputSchema>;
