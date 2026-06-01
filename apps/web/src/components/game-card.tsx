@@ -1,4 +1,4 @@
-import { Gamepad2 } from 'lucide-react';
+import { Gamepad2, Star } from 'lucide-react';
 import Image from 'next/image';
 import { type ReactNode } from 'react';
 
@@ -11,6 +11,7 @@ interface GameCardProps {
   coverUrl?: string;
   releaseDate?: string;
   platforms: string[];
+  rating?: number | null;
   className?: string;
 }
 
@@ -20,6 +21,7 @@ export function GameCard({
   coverUrl,
   releaseDate,
   platforms,
+  rating,
   className,
 }: GameCardProps): ReactNode {
   const year = releaseDate ? new Date(releaseDate).getFullYear() : null;
@@ -46,6 +48,12 @@ export function GameCard({
           <div className="flex h-full w-full items-center justify-center text-muted-foreground">
             <Gamepad2 className="h-12 w-12" />
           </div>
+        )}
+        {typeof rating === 'number' && (
+          <span className="absolute right-1.5 top-1.5 flex items-center gap-1 rounded-md bg-black/70 px-1.5 py-0.5 text-xs font-medium text-white">
+            <Star className="h-3 w-3 fill-current" />
+            {rating}
+          </span>
         )}
       </div>
       <div className="flex flex-col gap-1 px-3 pb-3">

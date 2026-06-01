@@ -72,7 +72,8 @@
     "stats": {
       "title": "Library",
       "total": "{count} games tracked"
-    }
+    },
+    "topGames": "Top games"
   },
   "library": {
     "title": "Your library",

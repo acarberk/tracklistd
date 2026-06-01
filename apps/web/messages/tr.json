@@ -72,7 +72,8 @@
     "stats": {
       "title": "Kütüphane",
       "total": "{count} oyun takip ediliyor"
-    }
+    },
+    "topGames": "En iyi oyunlar"
   },
   "library": {
     "title": "Kütüphanen",
