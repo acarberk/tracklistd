@@ -1,4 +1,8 @@
-import { type PublicProfileOutput, type PublicUserGamesOutput } from '@tracklistd/shared';
+import {
+  type PublicProfileOutput,
+  type PublicUserGamesOutput,
+  type UserStatsOutput,
+} from '@tracklistd/shared';
 
 import { apiClient } from '../api-client';
 
@@ -17,5 +21,10 @@ export async function getPublicUserGames(
     `/users/${encodeURIComponent(username)}/games`,
     { params: { limit } },
   );
+  return response.data;
+}
+
+export async function getMyStats(): Promise<UserStatsOutput> {
+  const response = await apiClient.get<UserStatsOutput>('/users/me/stats');
   return response.data;
 }

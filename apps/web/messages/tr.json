@@ -55,6 +55,7 @@
     "save": "Kaydet",
     "cancel": "İptal",
     "viewPublic": "Herkese açık profili gör",
+    "viewStats": "İstatistiklerini gör",
     "signInRequired": {
       "title": "Profilini görmek için giriş yap",
       "description": "Koleksiyonun, arkadaşların ve istatistiklerin burada.",
@@ -74,6 +75,22 @@
       "total": "{count} oyun takip ediliyor"
     },
     "topGames": "En iyi oyunlar"
+  },
+  "stats": {
+    "title": "İstatistiklerin",
+    "totalGames": "Oyun",
+    "totalHours": "Oynanan saat",
+    "averageRating": "Ort. puan",
+    "byStatus": "Duruma göre",
+    "topGenres": "En çok türler",
+    "topPlatforms": "En çok platformlar",
+    "empty": "İstatistiklerini görmek için kütüphanene oyun ekle.",
+    "discover": "Oyunları keşfet",
+    "signInRequired": {
+      "title": "İstatistiklerini görmek için giriş yap",
+      "description": "Türlerin, platformların ve oynama geçmişin burada.",
+      "cta": "Giriş yap"
+    }
   },
   "library": {
     "title": "Kütüphanen",

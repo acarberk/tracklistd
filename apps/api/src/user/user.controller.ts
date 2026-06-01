@@ -7,7 +7,7 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { type AuthenticatedRequest } from '../auth/types';
 import { ZodValidationPipe } from '../auth/zod-validation.pipe';
 
-import { UpdateProfileDto, UserProfileDto } from './user.dto';
+import { UpdateProfileDto, UserProfileDto, UserStatsDto } from './user.dto';
 import { UserService } from './user.service';
 
 @ApiTags('users')
@@ -41,6 +41,13 @@ export class UserController {
   ): Promise<UserProfileDto> {
     const updated = await this.users.updateProfile(req.user.sub, input);
     return this.toDto(updated);
+  }
+
+  @Get('stats')
+  @ApiOperation({ summary: 'Get aggregate library stats for the authenticated user' })
+  @ApiOkResponse({ type: UserStatsDto })
+  getStats(@Req() req: AuthenticatedRequest): Promise<UserStatsDto> {
+    return this.users.getStats(req.user.sub);
   }
 
   private toDto(user: User): UserProfileDto {
