@@ -1,6 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { type User } from '@prisma/client';
-import { GAME_STATUSES, type GameStatus, type PublicProfileOutput } from '@tracklistd/shared';
+import {
+  GAME_STATUSES,
+  type GameStatus,
+  type PublicProfileOutput,
+  type PublicUserGame,
+} from '@tracklistd/shared';
 
 import { PrismaService } from '../prisma/prisma.service';
 
@@ -107,6 +112,30 @@ export class UserService {
       createdAt: user.createdAt.toISOString(),
       stats: { total, byStatus },
     };
+  }
+
+  async getPublicGames(username: string, limit: number): Promise<PublicUserGame[] | null> {
+    const user = await this.findByUsername(username);
+    if (!user) {
+      return null;
+    }
+
+    const entries = await this.prisma.userGame.findMany({
+      where: { userId: user.id },
+      include: { game: true },
+      orderBy: [{ rating: { sort: 'desc', nulls: 'last' } }, { createdAt: 'desc' }],
+      take: limit,
+    });
+
+    return entries.map((entry) => ({
+      slug: entry.game.slug,
+      title: entry.game.title,
+      coverUrl: entry.game.coverUrl,
+      releaseDate: entry.game.releaseDate?.toISOString() ?? null,
+      platforms: entry.game.platforms,
+      status: entry.status,
+      rating: entry.rating,
+    }));
   }
 
   findByGoogleId(googleId: string): Promise<User | null> {

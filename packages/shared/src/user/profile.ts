@@ -49,3 +49,21 @@ export const publicProfileOutputSchema = z.object({
 });
 
 export type PublicProfileOutput = z.infer<typeof publicProfileOutputSchema>;
+
+export const publicUserGameSchema = z.object({
+  slug: z.string(),
+  title: z.string(),
+  coverUrl: z.url().nullable(),
+  releaseDate: z.iso.datetime().nullable(),
+  platforms: z.array(z.string()),
+  status: gameStatusSchema,
+  rating: z.number().int().nullable(),
+});
+
+export type PublicUserGame = z.infer<typeof publicUserGameSchema>;
+
+export const publicUserGamesOutputSchema = z.object({
+  items: z.array(publicUserGameSchema),
+});
+
+export type PublicUserGamesOutput = z.infer<typeof publicUserGamesOutputSchema>;

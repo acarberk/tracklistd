@@ -63,6 +63,34 @@ export class PublicProfileDto {
   stats!: PublicProfileStatsDto;
 }
 
+export class PublicUserGameDto {
+  @ApiProperty()
+  slug!: string;
+
+  @ApiProperty()
+  title!: string;
+
+  @ApiProperty({ nullable: true, format: 'uri' })
+  coverUrl!: string | null;
+
+  @ApiProperty({ nullable: true, format: 'date-time' })
+  releaseDate!: string | null;
+
+  @ApiProperty({ type: [String] })
+  platforms!: string[];
+
+  @ApiProperty({ example: 'COMPLETED' })
+  status!: string;
+
+  @ApiProperty({ nullable: true, example: 8 })
+  rating!: number | null;
+}
+
+export class PublicUserGamesDto {
+  @ApiProperty({ type: [PublicUserGameDto] })
+  items!: PublicUserGameDto[];
+}
+
 export class UpdateProfileDto {
   @ApiProperty({ required: false, minLength: 1, maxLength: 100 })
   displayName?: string;

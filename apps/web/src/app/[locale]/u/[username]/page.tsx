@@ -7,9 +7,10 @@ import { useParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { type ReactNode } from 'react';
 
+import { GameCard } from '@/components/game-card';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { getPublicProfile } from '@/lib/api/users';
+import { getPublicProfile, getPublicUserGames } from '@/lib/api/users';
 import { extractApiError } from '@/lib/api-client';
 
 export default function PublicProfilePage(): ReactNode {
@@ -73,7 +74,7 @@ function PublicProfileView({ profile }: { profile: PublicProfileOutput }): React
   });
 
   return (
-    <main className="container mx-auto flex max-w-2xl flex-col gap-6 px-4 py-8">
+    <main className="container mx-auto flex max-w-4xl flex-col gap-6 px-4 py-8">
       <Card>
         <CardHeader className="flex flex-row items-center gap-4">
           <div className="relative h-20 w-20 overflow-hidden rounded-full border border-border bg-muted">
@@ -123,6 +124,53 @@ function PublicProfileView({ profile }: { profile: PublicProfileOutput }): React
           ))}
         </CardContent>
       </Card>
+
+      <TopGames username={profile.username} />
     </main>
+  );
+}
+
+function TopGames({ username }: { username: string }): ReactNode {
+  const t = useTranslations('publicProfile');
+  const { data, isLoading } = useQuery({
+    queryKey: ['publicUserGames', username],
+    queryFn: () => getPublicUserGames(username),
+  });
+  const games = data?.items ?? [];
+
+  if (isLoading) {
+    return (
+      <section className="flex flex-col gap-3">
+        <h2 className="text-base font-semibold">{t('topGames')}</h2>
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
+          {Array.from({ length: 8 }).map((_, index) => (
+            <Skeleton key={index} className="aspect-[3/4] w-full" />
+          ))}
+        </div>
+      </section>
+    );
+  }
+
+  if (games.length === 0) {
+    return null;
+  }
+
+  return (
+    <section className="flex flex-col gap-3">
+      <h2 className="text-base font-semibold">{t('topGames')}</h2>
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
+        {games.map((game) => (
+          <GameCard
+            key={game.slug}
+            slug={game.slug}
+            title={game.title}
+            coverUrl={game.coverUrl ?? undefined}
+            releaseDate={game.releaseDate ?? undefined}
+            platforms={game.platforms}
+            rating={game.rating}
+          />
+        ))}
+      </div>
+    </section>
   );
 }
