@@ -106,6 +106,13 @@ export class UserGameService {
     return entry;
   }
 
+  findByIgdbId(userId: string, igdbId: number): Promise<(UserGame & { game: Game }) | null> {
+    return this.prisma.userGame.findFirst({
+      where: { userId, game: { igdbId } },
+      include: { game: true },
+    });
+  }
+
   async update(
     userId: string,
     userGameId: string,

@@ -5,6 +5,7 @@ import {
   type UpdateUserGameInput,
   type UserGameOutput,
 } from '@tracklistd/shared';
+import { isAxiosError } from 'axios';
 
 import { apiClient } from '../api-client';
 
@@ -30,4 +31,18 @@ export async function updateUserGame(
 
 export async function deleteUserGame(id: string): Promise<void> {
   await apiClient.delete(`/users/me/games/${id}`);
+}
+
+export async function getUserGameByIgdb(igdbId: number): Promise<UserGameOutput | null> {
+  try {
+    const response = await apiClient.get<UserGameOutput>(
+      `/users/me/games/by-igdb/${String(igdbId)}`,
+    );
+    return response.data;
+  } catch (error) {
+    if (isAxiosError(error) && error.response?.status === 404) {
+      return null;
+    }
+    throw error;
+  }
 }

@@ -52,6 +52,7 @@ export function EditLibraryDialog({
     onSuccess: () => {
       setApiError(null);
       void queryClient.invalidateQueries({ queryKey: ['library'] });
+      void queryClient.invalidateQueries({ queryKey: ['userGame'] });
       onOpenChange(false);
     },
     onError: (error) => {
