@@ -5,6 +5,7 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  NotFoundException,
   Param,
   Patch,
   Post,
@@ -17,6 +18,7 @@ import {
   ApiBody,
   ApiCreatedResponse,
   ApiNoContentResponse,
+  ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
   ApiParam,
@@ -48,6 +50,7 @@ import { UserGameService } from './user-game.service';
 import type { Game, UserGame } from '@prisma/client';
 
 const userGameIdParamSchema = z.object({ id: z.uuid() });
+const igdbIdParamSchema = z.object({ igdbId: z.coerce.number().int().positive() });
 
 @ApiTags('user-games')
 @ApiBearerAuth()
@@ -78,6 +81,25 @@ export class UserGameController {
   ): Promise<ListUserGamesResponseDto> {
     const result = await this.userGames.list(req.user.sub, query);
     return this.toListDto(result);
+  }
+
+  @Get('by-igdb/:igdbId')
+  @ApiOperation({ summary: 'Get the authenticated user library entry for a game by IGDB id' })
+  @ApiParam({ name: 'igdbId', type: Number })
+  @ApiOkResponse({ type: UserGameDto })
+  @ApiNotFoundResponse({ description: 'The game is not in the user library' })
+  async findByIgdb(
+    @Req() req: AuthenticatedRequest,
+    @Param(new ZodValidationPipe(igdbIdParamSchema)) params: { igdbId: number },
+  ): Promise<UserGameDto> {
+    const entry = await this.userGames.findByIgdbId(req.user.sub, params.igdbId);
+    if (!entry) {
+      throw new NotFoundException({
+        code: 'USER_GAME_NOT_FOUND',
+        message: 'Library entry not found',
+      });
+    }
+    return this.toDto(entry);
   }
 
   @Get(':id')
