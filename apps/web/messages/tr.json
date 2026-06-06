@@ -7,6 +7,7 @@
     "home": "Ana sayfa",
     "discover": "Keşfet",
     "library": "Kütüphane",
+    "lists": "Listeler",
     "signIn": "Giriş yap"
   },
   "home": {
@@ -89,6 +90,49 @@
     "signInRequired": {
       "title": "İstatistiklerini görmek için giriş yap",
       "description": "Türlerin, platformların ve oynama geçmişin burada.",
+      "cta": "Giriş yap"
+    }
+  },
+  "lists": {
+    "title": "Listelerin",
+    "count": "{count} / {max} liste",
+    "gameCount": "{count} oyun",
+    "create": "Yeni liste",
+    "empty": "Henüz liste oluşturmadın.",
+    "createTitle": "Liste oluştur",
+    "editTitle": "Listeyi düzenle",
+    "nameLabel": "Ad",
+    "namePlaceholder": "örn. Rahatlatan oyunlar",
+    "descriptionLabel": "Açıklama",
+    "descriptionPlaceholder": "Bu liste ne hakkında?",
+    "publicLabel": "Herkese açık liste",
+    "save": "Kaydet",
+    "cancel": "İptal",
+    "editAction": "Düzenle",
+    "deleteAction": "Sil",
+    "confirmDelete": "Listeyi sil",
+    "backToLists": "Listelere dön",
+    "emptyItems": "Bu listede henüz oyun yok.",
+    "discoverGames": "Oyunları keşfet",
+    "removeItem": "Listeden kaldır",
+    "addToList": "Listeye ekle",
+    "addToListTitle": "Bir listeye ekle",
+    "noListsYet": "Henüz hiç listen yok.",
+    "manageLists": "Listeleri yönet",
+    "addedToList": "{name} listesine eklendi",
+    "loading": "Yükleniyor...",
+    "notFound": {
+      "title": "Liste bulunamadı"
+    },
+    "errors": {
+      "limitReached": "En fazla 5 liste oluşturabilirsin.",
+      "itemExists": "Bu oyun zaten o listede.",
+      "addFailed": "Oyun eklenemedi. Lütfen tekrar dene.",
+      "loadTitle": "Bu liste yüklenemedi"
+    },
+    "signInRequired": {
+      "title": "Listeleri yönetmek için giriş yap",
+      "description": "Oyunlarını düzenlemek için özel raflar oluştur.",
       "cta": "Giriş yap"
     }
   },

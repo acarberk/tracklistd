@@ -7,6 +7,7 @@
     "home": "Home",
     "discover": "Discover",
     "library": "Library",
+    "lists": "Lists",
     "signIn": "Sign in"
   },
   "home": {
@@ -89,6 +90,49 @@
     "signInRequired": {
       "title": "Sign in to see your stats",
       "description": "Your genres, platforms, and play history live here.",
+      "cta": "Sign in"
+    }
+  },
+  "lists": {
+    "title": "Your lists",
+    "count": "{count} / {max} lists",
+    "gameCount": "{count} games",
+    "create": "New list",
+    "empty": "You haven't created any lists yet.",
+    "createTitle": "Create a list",
+    "editTitle": "Edit list",
+    "nameLabel": "Name",
+    "namePlaceholder": "e.g. Cozy games",
+    "descriptionLabel": "Description",
+    "descriptionPlaceholder": "What's this list about?",
+    "publicLabel": "Public list",
+    "save": "Save",
+    "cancel": "Cancel",
+    "editAction": "Edit",
+    "deleteAction": "Delete",
+    "confirmDelete": "Delete list",
+    "backToLists": "Back to lists",
+    "emptyItems": "No games in this list yet.",
+    "discoverGames": "Discover games",
+    "removeItem": "Remove from list",
+    "addToList": "Add to list",
+    "addToListTitle": "Add to a list",
+    "noListsYet": "You don't have any lists yet.",
+    "manageLists": "Manage lists",
+    "addedToList": "Added to {name}",
+    "loading": "Loading...",
+    "notFound": {
+      "title": "List not found"
+    },
+    "errors": {
+      "limitReached": "You've reached the maximum of 5 lists.",
+      "itemExists": "This game is already in that list.",
+      "addFailed": "Couldn't add the game. Please try again.",
+      "loadTitle": "Couldn't load this list"
+    },
+    "signInRequired": {
+      "title": "Sign in to manage lists",
+      "description": "Create custom shelves to organize your games.",
       "cta": "Sign in"
     }
   },

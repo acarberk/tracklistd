@@ -17,6 +17,7 @@ const NAV_ITEMS = [
   { href: '/', key: 'home' },
   { href: '/discover', key: 'discover' },
   { href: '/library', key: 'library' },
+  { href: '/lists', key: 'lists' },
 ] as const;
 
 export function SiteHeader(): ReactNode {
