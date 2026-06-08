@@ -26,6 +26,10 @@ export function GameCard({
 }: GameCardProps): ReactNode {
   const year = releaseDate ? new Date(releaseDate).getFullYear() : null;
   const topPlatforms = platforms.slice(0, 3);
+  const metaParts = [
+    year !== null ? String(year) : null,
+    topPlatforms.length > 0 ? topPlatforms.join(', ') : null,
+  ].filter((part): part is string => part !== null);
 
   return (
     <Link
@@ -58,12 +62,9 @@ export function GameCard({
       </div>
       <div className="flex flex-col gap-1 px-3 pb-3">
         <h3 className="line-clamp-2 text-sm font-medium leading-tight">{title}</h3>
-        <div className="flex items-center justify-between text-xs text-muted-foreground">
-          <span>{year ?? '—'}</span>
-          {topPlatforms.length > 0 && (
-            <span className="line-clamp-1">{topPlatforms.join(', ')}</span>
-          )}
-        </div>
+        <p className="line-clamp-1 text-xs text-muted-foreground">
+          {metaParts.length > 0 ? metaParts.join(' · ') : '—'}
+        </p>
       </div>
     </Link>
   );

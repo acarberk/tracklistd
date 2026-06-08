@@ -9,6 +9,7 @@ import type { ReactNode } from 'react';
 
 import { AuthBootstrap } from '@/components/auth-bootstrap';
 import { EmailVerificationBanner } from '@/components/email-verification-banner';
+import { MobileNav } from '@/components/mobile-nav';
 import { QueryProvider } from '@/components/query-provider';
 import { SiteFooter } from '@/components/site-footer';
 import { SiteHeader } from '@/components/site-header';
@@ -55,7 +56,7 @@ export default async function LocaleLayout({
 
   return (
     <html lang={locale} suppressHydrationWarning>
-      <body className="flex min-h-screen flex-col bg-background text-foreground antialiased">
+      <body className="flex min-h-screen flex-col bg-background text-foreground antialiased pb-16 sm:pb-0">
         <NextIntlClientProvider messages={messages}>
           <ThemeProvider
             attribute="class"
@@ -69,6 +70,7 @@ export default async function LocaleLayout({
                 <EmailVerificationBanner />
                 <div className="flex-1">{children}</div>
                 <SiteFooter />
+                <MobileNav />
               </AuthBootstrap>
             </QueryProvider>
             <Toaster />
