@@ -24,7 +24,7 @@
     "@tracklistd/config": "workspace:*",
     "@types/bcrypt": "^6.0.0",
     "@types/jest": "^30.0.0",
-    "@types/node": "^25.9.1",
+    "@types/node": "^25.9.3",
     "@types/passport": "^1.0.17",
     "@types/passport-google-oauth20": "^2.0.17",
     "@types/pg": "^8.20.0",
