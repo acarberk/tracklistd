@@ -24,7 +24,7 @@
   },
   "devDependencies": {
     "@tracklistd/config": "workspace:*",
-    "eslint": "^9.24.0",
+    "eslint": "^9.39.5",
     "typescript": "^6.0.3"
   },
   "dependencies": {
